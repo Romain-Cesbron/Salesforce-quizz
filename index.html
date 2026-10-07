@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Salesforce ADM-201 Quiz</title>
+  <title>Salesforce ADM-201 Pro Simulator</title>
   <style>
     :root {
       --primary: #0176d3;
@@ -12,8 +12,10 @@
       --card-bg: #ffffff;
       --text: #16325c;
       --border: #dddbda;
-      --success: #4caf50;
-      --error: #f44336;
+      --success: #2e844a;
+      --error: #ea001e;
+      --pass: #4caf50;
+      --fail: #f44336;
     }
    
     body {
@@ -27,101 +29,159 @@
     }
    
     .container {
-      max-width: 800px;
+      max-width: 850px;
       width: 100%;
       background: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      padding: 35px;
       box-sizing: border-box;
     }
    
-    h1 { color: var(--primary); text-align: center; margin-top: 0; }
+    h1 { color: var(--primary); text-align: center; margin-top: 0; font-size: 28px;}
    
-    .form-group { margin-bottom: 25px; }
-    label { font-weight: bold; display: block; margin-bottom: 8px; }
-    select { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); font-size: 16px; margin-bottom: 15px;}
-   
-    button {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary);
-      color: white;
-      border: none;
+    .status-badge {
+      display: block;
+      background: #e8f5e9;
+      color: var(--success);
+      padding: 10px 15px;
       border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+      border: 1px solid #c8e6c9;
+    }
+
+    /* Start Screen Grid */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+   
+    .mode-btn {
+      background: white;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: 20px;
+      border-radius: 8px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.2s;
-      margin-bottom: 10px;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    button:hover { background: var(--primary-dark); }
-    button:disabled { background: #c9c7c5; cursor: not-allowed; }
-    .btn-secondary { background: #ecebea; color: var(--text); }
-    .btn-secondary:hover { background: #dddbda; }
-   
-    .status-badge {
-      display: inline-block;
-      background: #e8f5e9;
-      color: #1b5e20;
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 14px;
+    .mode-btn span { font-size: 13px; font-weight: normal; color: #706e6b; text-align: center;}
+    .mode-btn:hover { background: var(--primary); color: white; }
+    .mode-btn:hover span { color: #e0e0e0; }
+
+    .timer-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       margin-bottom: 20px;
-      text-align: center;
-      width: 100%;
-      box-sizing: border-box;
+      font-weight: bold;
+      color: #3e3e3e;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
     }
 
     /* Quiz Screen Styles */
-    .progress-text { text-align: center; font-weight: bold; color: #706e6b; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #706e6b;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+   
+    .timer-display { color: var(--error); font-size: 16px; display: none; }
+   
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+    .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+
     .question-text { font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
     .instruction { font-size: 13px; color: #706e6b; font-style: italic; margin-bottom: 20px; }
    
     .option-label {
-      display: flex;
-      align-items: flex-start;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: background 0.2s;
+      display: flex; align-items: flex-start; padding: 14px 16px;
+      border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px;
+      cursor: pointer; transition: background 0.2s;
     }
-    .option-label:hover { background: #f3f2f2; }
-    .option-label input { margin-top: 4px; margin-right: 12px; cursor: pointer; }
-    .option-text { flex-grow: 1; line-height: 1.4; }
+    .option-label:hover { background: #f8f9fa; }
+    .option-label input { margin-top: 4px; margin-right: 15px; cursor: pointer; transform: scale(1.2); }
+    .option-text { flex-grow: 1; line-height: 1.4; font-size: 15px;}
    
-    .option-label.correct { background: #e8f5e9; border-color: var(--success); font-weight: bold; color: #1b5e20; }
-    .option-label.incorrect { background: #ffebee; border-color: var(--error); color: #b71c1c; }
+    .option-label.correct { background: #e8f5e9; border-color: var(--success); font-weight: bold; color: var(--success); }
+    .option-label.incorrect { background: #ffebee; border-color: var(--error); color: var(--error); }
    
     .explanation-box {
-      background: #f0f8fc;
-      border-left: 4px solid var(--primary);
-      padding: 15px;
-      margin-top: 25px;
-      margin-bottom: 20px;
-      border-radius: 0 6px 6px 0;
-      font-size: 14.5px;
-      line-height: 1.5;
-      display: none;
+      background: #f0f8fc; border-left: 4px solid var(--primary); padding: 18px;
+      margin-top: 25px; margin-bottom: 20px; border-radius: 0 8px 8px 0;
+      font-size: 14.5px; line-height: 1.6; display: none;
     }
+
+    .btn-primary {
+      width: 100%; padding: 15px; background: var(--primary); color: white;
+      border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
+      cursor: pointer; transition: background 0.2s; margin-bottom: 10px;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
    
+    .btn-secondary {
+      width: 100%; padding: 15px; background: white; color: var(--primary);
+      border: 2px solid var(--primary); border-radius: 8px; font-size: 16px; font-weight: bold;
+      cursor: pointer; transition: background 0.2s; margin-bottom: 10px;
+    }
+    .btn-secondary:hover { background: #f0f8fc; }
+
+    .btn-danger {
+      background: white; color: var(--error); border: 2px solid var(--error);
+    }
+    .btn-danger:hover { background: #ffebee; }
+
     /* Score Screen Styles */
     #score-screen { text-align: center; }
-    .score-circle { font-size: 64px; color: var(--primary); font-weight: bold; margin: 20px 0; }
+    .score-circle { font-size: 72px; font-weight: bold; margin: 10px 0; }
+    .pass-text { color: var(--pass); }
+    .fail-text { color: var(--fail); }
+    .pass-status { font-size: 24px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase;}
+   
+    .review-list {
+      text-align: left; background: #f8f9fa; border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px; margin-bottom: 25px;
+      max-height: 250px; overflow-y: auto;
+    }
+    .review-list h3 { margin-top: 0; font-size: 16px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 10px;}
+    .review-item { font-size: 14px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #ccc; }
+    .review-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
   </style>
 </head>
 <body>
 
 <!-- =========================================================
      EMBEDDED QUESTION DATA
-     You can paste ALL 150 questions inside this script block!
-     Just open this file in Notepad/TextEdit and paste them.
+     Paste ALL your questions inside this script block!
 ========================================================== -->
 <script type="text/template" id="embedded-quiz-data">
-
 
 NO.1 At Cloud Kicks, when a rep needs to seek additional support help, there's a series of actions the company wants to ensure are taken. The steps include sending an email and changing the status and owner of the case. 
 What should a Platform Administrator use to give the reps an easy way to make these updates? A. Case Assignment Rules 
@@ -143,7 +203,7 @@ Explanation:
 To meet the requirement of a "review process" that ends with data being sent to an "external system," the administrator needs Approval Processes and Outbound Messages. The Approval Process (Option D) handles the internal workflow, ensuring that the manager and director sign off on the expense report. Once the final approval is granted, an "Approval Action" can be triggered. The administrator should use an Outbound Message (Option A) as that action. Outbound Messages are designed to send specific record data (XML via API) to an external URL whenever a record change occurs. This provides a reliable, declarative way to integrate Salesforce with an HR system. Quick Actions (Option C) and Email Alerts (Option B) do not support the technical data transfer needed for external system integration. 
 NO.3 Universal Containers' Platform Administrator has been asked to create a many-to-many relationship between two existing custom objects. Which two steps should the administrator take when enabling the many-to-many relationship? 
 A. Create a junction with a custom object. 
-2
+
 
 B. Create two master-detail relationships on the new object. 
 C. Create URL fields on a custom object. 
@@ -157,17 +217,17 @@ D. Answer the lead's questions with responses that are grounded in company data.
 Explanation: 
 Agentforce SDR (Sales Development Representative) is an AI agent designed to autonomously engage with prospects to nurture leads and accelerate the sales pipeline. A core functionality of this agent is its ability to interact with potential customers by answering their specific questions about products or services. Crucially, these responses are grounded in company data, meaning the agent retrieves relevant information from the Salesforce Knowledge base, product catalogs, or other internal resources to provide accurate, brand-aligned answers. This ensures that the agent provides high quality, trustworthy information without the 
 "hallucinations" common in non-grounded AI. While the agent helps in lead qualification and nurturing, its primary value in an ecommerce or sales support context is providing immediate, context-aware assistance. It is not intended to replace humans in complex price negotiations (Option B) or serve purely as a coaching tool (Option C), but rather to act as a front-line digital worker that scales the sales team's reach by handling information-seeking queries autonomously. 
-NO.5 A group of sales reps can view each other's orders on a report; however, they would like a report to view just their own orders. What should a Platform Administrator do to set up a report for the sales reps?31 
+NO.5 A group of sales reps can view each other's orders on a report; however, they would like a report to view just their own orders. What should a Platform Administrator do to set up a report for the sales reps?
 A. Set the Opportunity Filter for Primary as True. 
 B. Filter by Opportunity Owner equals $USER. 
 C. Set Organization Wide Defaults of Order object to Private. 
 D. Save the report in a private folder for the user. 
 Answer: B 
-3
+
 
 Explanation: 
 In Salesforce reporting, administrators can use relative date and user filters to make a single report template dynamic for every person who views it. By setting the filter to Opportunity Owner (or Order Owner) equals 
-$USER, the report will automatically filter the results to show only those records owned by the individual currently logged in and viewing the report. This is much more efficient than creating separate reports for every rep. While setting the Organization-Wide Defaults to Private (Option C) would restrict general visibility, it does not help if the reps need to be able to see each other's data for other business reasons but simply want a "clean" personal view for daily tasks36. Saving the report in a private folder (Option D) only restricts who can see the report itself, not the data contained within it. Using the $USER variable is the standard way to provide personalized, relevant data views in a shared reporting environment. 
+$USER, the report will automatically filter the results to show only those records owned by the individual currently logged in and viewing the report. This is much more efficient than creating separate reports for every rep. While setting the Organization-Wide Defaults to Private (Option C) would restrict general visibility, it does not help if the reps need to be able to see each other's data for other business reasons but simply want a "clean" personal view for daily tasks. Saving the report in a private folder (Option D) only restricts who can see the report itself, not the data contained within it. Using the $USER variable is the standard way to provide personalized, relevant data views in a shared reporting environment. 
 NO.6 Cloud Kicks is working on a rebrand. In which two areas of the Salesforce mobile app can a Platform Administrator customize the branding? 
 A. App header color 
 B. Record background color 
@@ -186,7 +246,7 @@ A. Check if the user in the next approver is inactive or missing.
 B. Review the page layout to ensure the fields updated in the process are visible. C. Update the field-level security to view on fields that are updated in the process. D. Add a delegated approver for the next approver in the process. 
 Answer: A 
 Explanation: 
-A common cause of errors in an Approval Process is a breakdown in the "Approver" chain. If an 4
+A common cause of errors in an Approval Process is a breakdown in the "Approver" chain. If an 
 
 approval step is configured to route to a specific user or a manager who has been deactivated, Salesforce will throw an error when the current step tries to advance. The Platform Administrator should check the "Next Approver" field on the record or the step definition in Setup to ensure the target user is active and has a valid Salesforce license. While field visibility (Options B and C) is important for the user experience, missing field access typically doesn't "error out" the approval engine itself; it just prevents the user from seeing the data. Checking for inactive users is the first step in troubleshooting runtime errors in automated routing processes. 
 NO.8 Universal Containers (UC) customers have provided feedback that their support cases are not being responded to quickly enough. UC wants to send all unassigned cases that have been open for more than 2 hours to an urgent Case queue and alert the support manager. Which feature should a Platform Administrator configure to meet this requirement? 
@@ -199,7 +259,7 @@ Explanation:
 Case Escalation Rulesare specifically designed to automate actions when a case has remained in a certain state for a defined period of time. In this scenario, the requirement involves two specific time-based triggers: 
 moving the case after 2 hours and alerting a manager. Escalation rules allow the administrator to define 
 "Escalation Actions" that execute when the time threshold is reached, such as "Reassign to Queue" and 
-"Notify Manager". Case Assignment Rules (Option D) only fire when a case is first created or manually triggered, not after a time delay63. Reports (Option A) and Dashboards (Option B) provide information but do not physically move records or perform automated reassignments. 
+"Notify Manager". Case Assignment Rules (Option D) only fire when a case is first created or manually triggered, not after a time delay. Reports (Option A) and Dashboards (Option B) provide information but do not physically move records or perform automated reassignments. 
 NO.9 Cloud Kicks has an administrator team that manages the org. The company has asked for a small subset of leadership users to have Modify All access, like the administrators have. How should the administrator team accomplish this? 
 A. Assign the standard Platform User profile to the leadership users and edit the permissions to Modify All access. 
 B. Assign the standard System Administrator profile to the leadership users that includes the Modify All access. 
@@ -208,7 +268,7 @@ D. Clone the standard User profile to the leadership users and assign a Modify A
 Answer: C 
 Explanation: 
 Salesforce best practices dictate the Principle of Least Privilege, which means users should only be given the minimum level of access required to do their jobs. Assigning leadership users the "System Administrator" profile (Option B) is dangerous because it grants them the ability to change the 
-5
+
 
 system configuration, delete fields, and manage users. Instead, the administrator should keep the leadership users on their standard functional profile and grant the "Modify All Data" permission via a Permission Set. This approach provides the users with the data visibility they need (the ability to view and edit all records across the org) without giving them administrative control over the backend setup. Option A is incorrect because you cannot edit standard profiles directly. Option D is incorrect because "Roles" control record visibility and hierarchy, but they do not grant administrative permissions like "Modify All Data." Using a Permission Set is the most secure and flexible way to elevate data access for a specific group. 
 NO.10 At Cloud Kicks, cases are being assigned a default Case Owner and showing a Created By and Last Modified By that is not expected. The company wants to change this to an integration user to alleviate confusion with the business. What should a Platform Administrator edit to change this in Salesforce? 
@@ -228,7 +288,7 @@ Answer: A
 Explanation: 
 A Bucket Column in a Salesforce report allows a user to group multiple field values into larger, more meaningful categories (buckets) without needing to create a new custom field or modify the underlying data. 
 For instance, if a "Industry" picklist has twenty different values like "Banking," "Insurance," and "Venture Capital," a sales rep can create a bucket called "Financial Services" and place all three values inside it. When the report is run, these records are displayed under the "Financial Services" header. 
-6
+
 
 This is the ideal solution for ad-hoc reporting needs where the user wants to see data summarized in a way that doesn't exactly match the existing picklist structure. Report Filters (Option C) would exclude data rather than categorizing it. 
 Unique Count (Option B) simply tells you how many distinct values exist in a column. Charts (Option D) are for visualization. Bucketing is a powerful, self-service tool for users to reorganize data for analysis. 
@@ -239,7 +299,7 @@ D. Manual sharing
 Answer: B 
 Explanation: 
 In this scenario, the two teams are "peers" in the role hierarchy (both reporting to the same manager). In a private sharing model, peers cannot see each other's records by default. To grant lateral access between these specific groups, an Owner-based Sharing Rule is the most effective solution. The administrator can create a rule stating that any records owned by members of "Role: Sales Team A" should be shared with members of 
-"Role: Sales Team B" with specific access levels (e.g., Read/Write). Hierarchical sharing (Option C) only grants upward visibility to the Manager role, not across to the other team34. Manual sharing (Option D) is inefficient for an entire team35. Criteria-based sharing (Option A) is used when record field values determine access, whereas this requirement is based specifically on who owns the records36. 
+"Role: Sales Team B" with specific access levels (e.g., Read/Write). Hierarchical sharing (Option C) only grants upward visibility to the Manager role, not across to the other team. Manual sharing (Option D) is inefficient for an entire team. Criteria-based sharing (Option A) is used when record field values determine access, whereas this requirement is based specifically on who owns the records. 
 NO.13 The client services and customer support teams share the same profile but have different permission sets. The custom object Retention related list needs to be restricted to the client services team on the Lightning record page layout. What should a Platform Administrator use to fulfill this request? 
 A. Page Layout Assignment 
 B. Component Visibility 
@@ -248,7 +308,7 @@ D. Sharing Settings
 Answer: B 
 Explanation: 
 When users share the same profile but require different user interface experiences, Component Visibility is the most effective tool. In the Lightning App Builder, the administrator can select the "Related List" component (or a "Related List - Single" component for Retention) and add a visibility filter. The filter can be set to "User > Permission > Custom Permission" or "User > Profile," but since they share a profile, the best approach is to filter based on a Permission Set or a specific user field. This allows the Retention list to be visible only to the Client Services team members while remaining hidden for the Customer Support team, even though they are looking at the same record. Page Layout Assignment (Option A) and Record Type Assignment (Option C) are profile-based and would 
-7
+
 
 not work since the teams share a profile. Sharing Settings (Option D) control access to the data itself, but the request specifically asks to hide the UI element (the related list). 
 NO.14 Users at Cloud Kicks want to see information that is more useful for their role on the Case page. How should a Platform Administrator make the pages more dynamic and easier to use? A. Add component visibility filters to the components. 
@@ -266,7 +326,7 @@ Answer: C
 Explanation: 
 Delegated Administration is a powerful feature that allows a System Administrator to pass off specific administrative tasks to non-admin users without granting them the full "Modify All Data" permission. However, there are strict security boundaries to what a delegated admin can do. One of the most critical limitations is that delegated administrators cannot modify permission sets. They are primarily intended to manage users within specific roles, reset passwords, and manage specific custom objects. While they can assign users to certain profiles that have been explicitly allowed in the Delegated Administration group configuration, they are not permitted to manage the broader security architecture of the org, such as Permission Sets or Field-Level Security (Option B). This ensures that while junior staff can handle day-to-day user maintenance (like unlocking users, contrary to Option A), they cannot inadvertently elevate their own permissions or those of others through permission set manipulation. 
 NO.16 Which two data loss considerations should a Platform Administrator keep in mind when changing a custom field type from Text to Picklist? 
-8
+
 
 A. Auto updates will be made to Visualforce references to prevent data loss. B. Any list view based on the custom field is deleted. 
 C. There will be no data loss with use of a global value set. 
@@ -286,7 +346,7 @@ A. Generating cold calls
 B. Automating all marketing content 
 C. Providing basic web bot chats 
 D. Automating Lead Qualification 
-9
+
 
 Answer: D 
 Explanation: 
@@ -300,14 +360,14 @@ D. Flow Approvals
 Answer: D 
 Explanation: 
 The requirement to have a record "signed off" by a specific individual (the CFO) based on a dollar threshold is a classic use case for an Approval Process. While the "Submit for Approval" button (Option A) allows a user to manually start the process, the prompt specifies that the process should happen "automatically"50. To achieve this automation, the Platform Administrator should use Flow Builder to trigger the approval process. 
-A Record-Triggered Flow can be set to run when an Opportunity is created or updated and meets the criteria (Amount > $100,000). The flow would then use the "Submit for Approval" action to launch the record into the predefined approval process without requiring the sales rep to click a button. Einstein Next Best Action (Option B) is a recommendation tool, not a workflow enforcement tool54. Apex Triggers (Option C) could perform this task, but Salesforce best practices recommend using "clicks not code" (Flow) whenever possible for such requirements. Using Flow to launch an Approval Process provides the necessary automation, routing, and audit trail the CFO requires 
+A Record-Triggered Flow can be set to run when an Opportunity is created or updated and meets the criteria (Amount > $100,000). The flow would then use the "Submit for Approval" action to launch the record into the predefined approval process without requiring the sales rep to click a button. Einstein Next Best Action (Option B) is a recommendation tool, not a workflow enforcement tool. Apex Triggers (Option C) could perform this task, but Salesforce best practices recommend using "clicks not code" (Flow) whenever possible for such requirements. Using Flow to launch an Approval Process provides the necessary automation, routing, and audit trail the CFO requires 
 NO.20 Cloud Kicks uses the standard Account Type field to indicate different account tiers. Users find this confusing, so management has asked that the field be changed to read "Tier" on the page layouts. How should a Platform Administrator implement this change? 
 A. Edit the Type field and change the name. 
 B. Use Rename Tabs and Labels. 
 C. Build a custom field called Tier and delete Type. 
 D. Create a global picklist value set. 
 Answer: B 
-10
+
 
 Explanation: 
 To change the display name of a standard field (like "Account Type") globally across the entire organization, the correct tool is Rename Tabs and Labels in the Setup menu. This tool allows an administrator to modify the singular and plural labels for standard objects and the field labels for their standard fields. By renaming 
@@ -332,18 +392,18 @@ Explanation:
 The fundamental way to control which records enter an Approval Process is by defining Entry Criteria . 
 During the setup of an approval process, the administrator specifies field-level conditions (e.g., Amount > 
 50,000 AND Stage = Closed Won) that a record must meet to be eligible for approval. If a user attempts to submit a record that does not meet these criteria, Salesforce will display an error 
-11
+
 
 message and prevent the process from starting. This ensures that the finance or management teams are only notified of deals that actually require their sign-off. While a Screen Flow (Option C) could be used to launch the process, the entry criteria within the approval process itself act as the ultimate "gatekeeper" for the automation. Validation rules (Option D) prevent bad data but do not route records for approval. Dynamic Forms (Option B) can show or hide the "Submit for Approval" button, but they do not enforce the underlying business logic of the process itself. 
 NO.23 At Cloud Kicks, sales reps use discounts on the opportunity record to help win sales on particular products. 
 When an opportunity is won, they then have to manually apply the discount to the related opportunity products. The sales manager has asked if there is a way to automate this time-consuming task. What should a Platform Administrator use to deliver this requirement? 
-A. Approval Process1 
-B. Formula Field2 
-C. Flow Builder3 
-D. Prebuilt Macro4 
+A. Approval Process 
+B. Formula Field 
+C. Flow Builder
+D. Prebuilt Macro
 Answer: C 
 Explanation: 
-To automate the update of related records (Opportunity Products) based on a change to a parent record (the Opportunity), Flow Builder is the most powerful and app7ropriate tool. Specifically, a "Record-Triggered Flow" can be configured to fire whenever an Opportunity is updated to the "Closed Won" stage. The flow can then use a "Get Records" element to find all Opportunity Product records associated with that specific Opportunity and an "Update Records" element to apply the discount value from the parent to each line item. 
+To automate the update of related records (Opportunity Products) based on a change to a parent record (the Opportunity), Flow Builder is the most powerful and appropriate tool. Specifically, a "Record-Triggered Flow" can be configured to fire whenever an Opportunity is updated to the "Closed Won" stage. The flow can then use a "Get Records" element to find all Opportunity Product records associated with that specific Opportunity and an "Update Records" element to apply the discount value from the parent to each line item. 
 Formula Fields are insufficient here because they are "read-only" and cannot physically push data into other records for permanent storage. Approval Processes manage status changes but are not designed for bulk child- record updates. Flow Builder provides the logic necessary to handle this "one -to-many" update scenario, significantly reducing manual data entry for sales reps and ensuring that the financial data on the products accurately reflects the agreed-upon deal terms. 
 NO.24 Ursa Major Solar wants to roll out the Salesforce mobile app, and the first information it wants its users to see is the Top Opportunities report. What should a Platform Administrator configure to achieve this? 
 A. Add the Reports tab to the Salesforce mobile app. 
@@ -353,9 +413,9 @@ D. Add the Dashboards tab to the Salesforce mobile app.
 Answer: C 
 Explanation: 
 Mobile Homeis a customizable landing page for the Salesforce mobile app that acts as the default "start page" for users. It allows administrators to add various "cards" or "widgets," including reports, pinned records, and upcoming events. By enabling and configuring Mobile Home, a Platform Administrator can place a specific Report card (such as "Top Opportunities") at the very top of the screen, ensuring it is the first thing users see upon opening the app. While adding the Reports tab (Option A) or Dashboards tab (Option D) allows users to find the information, it does not 
-12
 
-automatically present specific report data on the home screen. The "Today" feature (Option B) focuses on calendar events and tasks rather than customized reporting data17. 
+
+automatically present specific report data on the home screen. The "Today" feature (Option B) focuses on calendar events and tasks rather than customized reporting data. 
 NO.25 A Platform Administrator at Cloud Kicks would like to use Salesforce to start tracking details around its marketing efforts. They would like to track details around emails, trade shows, and webinars. Additionally, each of these initiatives will need to track different types of information. How should the administrator accomplish this? 
 A. Create a custom report type with relevant fields. 
 B. Create a custom field on the Campaign object for the type of initiative. 
@@ -374,7 +434,7 @@ E. Enable guided selling.
 Answer: A C D 
 Explanation: 
 To ensure data integrity and guide sales reps through a structured process, a Platform Administrator should use a combination of tools. Opportunity Path (Option C) provides a visual representation of the stages and allows the admin to highlight "Key Fields" and "Guidance for Success" for each stage, making it clear what information is needed to progress. To enforce the entry of that data, Validation Rules (Option D) are used to prevent a user from moving to the next stage if specific fields are blank (e.g., AND(IsChanged(StageName), IsBlank(Discovery_Notes__c))). Additionally, marking fields as required on the Page Layout (Option A) ensures that the most fundamental data points are always captured. While Flow (Option B) can perform many tasks, it is not the primary way to mark fields as "required" in the UI. "Guided Selling" (Option E) is a specific term often associated with Salesforce CPQ rather than standard Opportunity management. Using Path, Validation Rules, and Page Layout 
-13
+
 
 requirements provides a robust framework for managing the sales lifecycle effectively. 
 NO.27 A Platform Administrator wants to limit the kinds of reports their users can create. Which tool should the administrator use? 
@@ -396,7 +456,7 @@ The foundation of Salesforce data security is the Organization-Wide Default (OWD
 NO.29 A Platform Administrator at Ursa Major Solar imported records into an object by mistake. Which two tools should the administrator use to undo this import? 
 A. Weekly Data Export 
 B. Data Loader 
-14
+
 
 C. Data Import Wizard D. Mass Delete Records Answer: B D 
 Explanation: 
@@ -415,17 +475,17 @@ Answer: B
 Explanation: 
 The Setup Audit Trail is the primary tool for tracking administrative and configuration changes within a Salesforce organization. It records a history of modifications made by any administrator, including the date and time of the change, which user made it, and exactly what was altered (e.g., creating a new field, changing a profile permission, or modifying a workflow rule). The history is available for the last six months of activity. Health Check (Option A) is a security tool that compares your settings against Salesforce standards. 
 History Tracking (Option C) and Feed Tracking (Option D) are used to track changes to records (like an Account's phone number), whereas the Setup Audit Trail is dedicated to tracking metadata and system configuration. 
-NO.31 A Platform Administrator has been asked to change the data type of an auto number to a text field. What should the administrator be aware of before changing the field?99 A. Existing field values will remain unchanged. 
+NO.31 A Platform Administrator has been asked to change the data type of an auto number to a text field. What should the administrator be aware of before changing the field? A. Existing field values will remain unchanged. 
 B. Changing Auto Number field to Text is prevented. 
 C. Existing field values will be deleted. 
 D. Existing field values will be converted. 
 Answer: A 
 Explanation: 
 In Salesforce, when a Platform Administrator changes a field's data type from Auto Number to Text, the operation is considered "safe" regarding data retention. The existing values that were 
-15
 
-automatically generated by the system (e.g., "INV-1001") will remain unchanged and stay within the field as static text strings12. 
-However, once the change is saved, the system will no longer increment or automatically generate new numbers for future records; users will have to enter data manually. It is important to note that the reverse operation-changing a Text field to an Auto Number-is different, as it would require the administrator to decide whether to overwrite existing data or only number new records14. Options 
+
+automatically generated by the system (e.g., "INV-1001") will remain unchanged and stay within the field as static text strings. 
+However, once the change is saved, the system will no longer increment or automatically generate new numbers for future records; users will have to enter data manually. It is important to note that the reverse operation-changing a Text field to an Auto Number-is different, as it would require the administrator to decide whether to overwrite existing data or only number new records. Options 
 B, C, and D are incorrect because Salesforce explicitly supports this specific conversion without deleting or fundamentally transforming the existing data into a different format other than plain text. 
 NO.32 Ursa Major Solar has its business hours set from 9:00 AM to 5:00 PM for the reps that are on Pacific Time. 
 The reps on Eastern Time need business hours set to start 3 hours earlier to cover for support. How should a Platform Administrator solve for this issue? 
@@ -434,7 +494,7 @@ C. Set temporary business hours for each time zone.
 D. Create one set of business hours per time zone. 
 Answer: D 
 Explanation: 
-Salesforce allows for the creation of multiple Business Hours records to support global teams working in different time zones. To solve the requirement for Ursa Major Solar, the Platform Administrator should create two distinct sets of business hours: one for "Pacific Support" (9 AM - 5 PM PT) and one for "Eastern Support" (9 AM - 5 PM ET). This is essential because Business Hours are used by the system to calculate escalation rules and milestones correctly. For example, an escalation rule for an Eastern-based case 1should start counting at 9 AM ET, not 9 AM PT. Adjusting the current record to "accommodate" both (Option A) would result in a 12-hour window that doesn't accurately reflect either team's true availability. Users cannot manually set their own business hours (Option B) in a way that affects system automation. Creating one set per time zone ensures that the support team's performance metrics and automated routing are accurate and localized. 
+Salesforce allows for the creation of multiple Business Hours records to support global teams working in different time zones. To solve the requirement for Ursa Major Solar, the Platform Administrator should create two distinct sets of business hours: one for "Pacific Support" (9 AM - 5 PM PT) and one for "Eastern Support" (9 AM - 5 PM ET). This is essential because Business Hours are used by the system to calculate escalation rules and milestones correctly. For example, an escalation rule for an Eastern-based case should start counting at 9 AM ET, not 9 AM PT. Adjusting the current record to "accommodate" both (Option A) would result in a 12-hour window that doesn't accurately reflect either team's true availability. Users cannot manually set their own business hours (Option B) in a way that affects system automation. Creating one set per time zone ensures that the support team's performance metrics and automated routing are accurate and localized. 
 NO.33 Ursa Major Solar wants to assist users with a guided expense report process to simplify submissions, routing, and authorizations. Which two tools should a Platform Administrator use to build this solution? 
 A. Validation Rule 
 B. Quick Action 
@@ -443,7 +503,7 @@ D. Approval Process
 Answer: C D 
 Explanation: 
 To create a "guided" experience combined with "routing and authorizations," a Platform Administrator should leverage the power of Flow Builder and the Approval Process engine. Flow Builder is used to create the user- facing interface (Screen Flow) that guides the employee through the expense report submission, ensuring all necessary data is collected in a structured way. This replaces a static page layout with a dynamic, step-by-step wizard. Once the data is captured and the record is created, the Flow can automatically submit the record into an Approval Process. The 
-16
+
 
 Approval Process then handles the "routing and authorizations" by sending the report to the appropriate manager or director for sign-off. While Quick Actions (Option B) can launch flows, they are a entry point rather than the logic engine itself. Validation Rules (Option A) only prevent errors but do not guide users or route records. Together, Flow and Approvals provide a seamless end-to end automation for complex business requirements like expense management. 
 NO.34 A sales rep has a list of 300 accounts with contacts that they want to load at one time. Which tool should a Platform Administrator utilize to import the records to Salesforce? A. Dataloader.io 
@@ -462,7 +522,7 @@ Answer: C
 Explanation: 
 Salesforce Critical Updates (now often called Release Updates) can significantly change the behavior of the platform, potentially impacting custom code, integrations, or existing automation. The best practice for any Platform Administrator is to activate and test the update in a Sandbox environment first. This allows the administrator to identify and resolve any breaking changes without disrupting the live business operations in Production. Only after the update has been thoroughly vetted and all necessary adjustments have been made should the update be activated in the Production environment. Allowing an update to "auto-activate" (Options A and D) is risky because it removes the administrator's control over the timing and testing of the change. 
 Activating directly in Production (Option B) bypasses the essential quality assurance steps that are fundamental to professional org management. 
-NO.36 A Platform Administrator is building an agent to help an ecommerce support team. The agent 17
+NO.36 A Platform Administrator is building an agent to help an ecommerce support team. The agent 
 
 needs to call an action, named updateShippingAddress, that modifies a customer's shipping address in the system. Which set of Action Instructions should the administrator use for the updateShippingAddress action, according to best practices? 
 A. "Use this to update shipping information. It's used for any changes to a customer's address in the system." 
@@ -482,7 +542,7 @@ Explanation:
 Case Escalation Rules are the dedicated tool for time-based notifications and reassignments in Service Cloud. 
 The Platform Administrator can set an escalation rule entry that triggers when a case is "Older than 2 hours" and meets specific status criteria (e.g., Status = New). The rule can then be configured to send an Email Notification to a manager or a specific distribution list. This ensures that management is alerted to potential SLA breaches. Assignment Rules (Option A) only run when a case is first created. Formula fields (Option C) can calculate time but cannot send notifications. Omni-Channel Supervisor (Option D) allows for real-time monitoring but does not provide automated email alerting based on specific time-elapsed thresholds. 
 NO.38 A Platform Administrator at Ursa Major Solar wants to add prepopulated subjects for Tasks and Events. 
-18
+
 
 Tasks should have the subjects "Schedule Site Visit" and "Send Contract", while Events should have the subjects "Site Visit" and "Ride Along". What should the administrator configure to achieve this requirement? 
 A. Add the new values to the predefined field values for the global actions New Event and New Task. B. Add Schedule Site Visit and Send Contract picklist values for the Task subject field. Add Site Visit and Ride Along picklist values for the Event subject field. 
@@ -500,7 +560,7 @@ D. Feature Settings
 Answer: B 
 Explanation: 
 In the Salesforce Setup menu, Company Settings (formerly Company Profile) is the central location where global organizational parameters are managed. This section contains several key settings. Under Company Information, the admin can view the Org ID, default time zone, and primary currency. The Fiscal Year settings allow the admin to define whether the organization follows a standard Gregorian calendar or a custom fiscal cycle. Business Hours are used to define the working times for the organization, which is critical for calculating milestones in Service Cloud or escalation rules. If Multi-Currency is enabled, this is also where exchange rates and active currencies are managed. Viewing and configuring these settings is a foundational task for any Platform Administrator, as they establish the baseline for how data is interpreted and how time- based automation functions across the entire instance. Ensuring these are correct is vital for accurate financial reporting and maintaining service level agreements (SLAs). 
-NO.40 A user at Northern Trail Outfitters is having trouble logging in to Salesforce. The user's login 19
+NO.40 A user at Northern Trail Outfitters is having trouble logging in to Salesforce. The user's login 
 
 history shows that this person has attempted to log in multiple times and has been locked out of the organization. Which two steps should a Platform Administrator take to help the user log in to Salesforce? 
 A. Log in as the user to unlock the user and reset the password. 
@@ -509,7 +569,7 @@ C. Reset password on the user's record detail page.
 D. Reset the password policies to allow the user to login. 
 Answer: B C 
 Explanation: 
-When a user is locked out of Salesforce due to too many incorrect login attempts, the Platform Administrator must take specific actions on the user's record detail page to restore access. First, the administrator should click the Unlock button19. This clears the lockout status immediately20. Second, because the user likely forgot their credentials (causing the failed attempts), the administrator should use the Reset Password button21. This sends a temporary link to the user's email, allowing them to create a new password and log in successfully. "Logging in as the user" (Option A) is a troubleshooting tool for existing sessions but cannot bypass a lockout or change a password on the user's behalf. Changing "Password Policies" (Option D) would affect the entire organization and is not a valid way to help a single locked-out individual. 
+When a user is locked out of Salesforce due to too many incorrect login attempts, the Platform Administrator must take specific actions on the user's record detail page to restore access. First, the administrator should click the Unlock button. This clears the lockout status immediately. Second, because the user likely forgot their credentials (causing the failed attempts), the administrator should use the Reset Password button. This sends a temporary link to the user's email, allowing them to create a new password and log in successfully. "Logging in as the user" (Option A) is a troubleshooting tool for existing sessions but cannot bypass a lockout or change a password on the user's behalf. Changing "Password Policies" (Option D) would affect the entire organization and is not a valid way to help a single locked-out individual. 
 NO.41 Sales managers would like to know what could be implemented to surface important values based on the stage of the opportunity? Which tool should a Platform Administrator use to meet this requirement? 
 A. Workflow Rules 
 B. Path Key Fields 
@@ -522,7 +582,7 @@ The Opportunity Path is a visual tool that guides sales reps through the stages 
 NO.42 A Platform Administrator needs to enable Agentforce for the service team. What is the most critical prerequisite for ensuring the Service Agents have a complete and accurate view of their customers? 
 A. Activate Email-to-Case for the agent. 
 B. Configure a new Service Console layout. 
-20
+
 
 C. Verify Data Cloud is implemented. D. Create new user profiles for the agent. Answer: C 
 Explanation: 
@@ -543,7 +603,7 @@ A. The flow is inactive.
 B. The flow URL is deactivated. 
 C. The flow is Read Only. 
 D. The flow trigger is missing. 
-21
+
 
 Answer: A 
 Explanation: 
@@ -566,7 +626,7 @@ D. Tasks without decision-making
 Answer: C 
 Explanation: 
 Agentforce is designed to handle multi-step processes that require reasoning and adaptation. Unlike traditional automation (like Workflow or simple Bots) that follows a linear, "If-This-Then-That" path, 
-22
+
 
 an Agentforce agent uses generative AI to understand user intent and choose the best sequence of actions to reach a goal. If a customer's request changes mid-conversation or requires the agent to check multiple systems and make a judgment call, the agentic loop allows it to adapt its behavior in real-time. Single-step processes (Option A) or tasks without decision-making (Option D) are better handled by standard Flow or Macros, which are more cost-effective for simple tasks. Static document generation (Option B) is a fixed output task. Agentforce's true value lies in managing the "gray areas" of business processes where human-like flexibility is needed. 
 NO.47 Northern Trail Outfitters has two different sales processes: one for business opportunities with four stages and one for partner opportunities with eight stages. Both processes will vary in page layouts and picklist value options. What should a Platform Administrator configure to meet these requirements? 
@@ -582,7 +642,7 @@ D. Assign a permission to enable Lightning Experience User.
 Answer: D 
 Explanation: 
 The "Minimum Access - Salesforce" profile is a very restrictive standard profile designed to provide no access by default, adhering to the principle of least privilege. One of the specific permissions that is not included in this profile is the Lightning Experience User permission. Without this system permission, users will be defaulted to the Salesforce Classic interface (or potentially blocked from any 
-23
+
 
 UI if no other access is granted). To resolve this, the Platform Administrator should either edit the custom profile or, preferably, create a Permission Set that includes the "Lightning Experience User" checkbox and assign it to the affected users. This "unlocks" the modern Lightning interface for them. Options B and C relate to the design of specific pages, but they are irrelevant if the user isn't even allowed to enter the Lightning environment. Option A refers to a different feature set entirely and does not address basic UI access. 
 NO.49 A sales rep has a list of 300 accounts with contacts that they want to load at one time. Which tool should a Platform Administrator utilize to import the records to Salesforce? A. Manual Import 
@@ -597,14 +657,14 @@ A. Add the standard Activities component to the Account Lightning record page. B
 Explanation: 
 The Activity Timeline is a standard Lightning component that displays open tasks, upcoming events, and past activities (like logged calls or sent emails) in a chronological view. If this timeline is missing from an Account page, it is usually because the component has been removed from the Lightning Record Page layout. 
 To fix this, the Platform Administrator should open the Account record in the Lightning App Builder. From the list of standard components on the left, the admin must drag the Activities component onto the page canvas-typically in the right-hand column or a dedicated tab. Once the page is saved and activated, the timeline will be visible to users. Visibility of the timeline is a layout configuration, not a specific "Edit access" permission (Option B). Running a report (Option C) might confirm if data exists, but it won't fix the UI issue. There is no "button" for the Activity Timeline in the Object Manager (Option D); it is managed strictly as a component within the App Builder. 
-24
+
 
 NO.51 Universal Containers wants to implement collaborative selling where multiple roles work together on customer accounts. Sales reps need full access to their assigned accounts, while customer support reps and sales engineers need access to opportunities and cases related to specific accounts they support. The sales manager wants to streamline the process by automatically adding the same team members to multiple accounts. Which feature should a Platform Administrator configure to meet this requirement? 
 A. Set up default account teams with specified access levels for different team roles. B. Create sharing rules to grant access to opportunities and cases for support teams. C. Configure role hierarchy to automatically grant account access to the appropriate teams. D. Use permission sets to provide additional access to account-related records. Answer: A 
 Explanation: 
 Account Teamsare designed specifically for "collaborative selling," allowing multiple users to work together on a single Account. By using Account Teams, an administrator can define specific roles (e.g., Sales Engineer, Support Rep) and grant them varying levels of access (Read/Write or Read Only) to the Account and its related Opportunities and Case. To meet the manager's requirement of "streamlining" and 
 "automatically adding" members, the administrator should encourage users to set upDefault Account Teams. 
-Once a user defines their default team in their personal settings, they can click a single button to add that entire team to any Account they own. Sharing Rules (Option B) are typically too broad for this requirement because they apply to all records meeting a criteria, rather than specific collaborative groups61. The Role Hierarchy (Option C) provides vertical access but doesn't easily handle the horizontal, project-based access required for support reps and engineers working on specific accounts62. Permission Sets (Option D) grant functional permissions (what a user can do) but do not grant access to specific data records in a collaborative way63. 
+Once a user defines their default team in their personal settings, they can click a single button to add that entire team to any Account they own. Sharing Rules (Option B) are typically too broad for this requirement because they apply to all records meeting a criteria, rather than specific collaborative groups. The Role Hierarchy (Option C) provides vertical access but doesn't easily handle the horizontal, project-based access required for support reps and engineers working on specific accounts. Permission Sets (Option D) grant functional permissions (what a user can do) but do not grant access to specific data records in a collaborative way. 
 NO.52 Ursa Major Solar (UMS) wants a place within Salesforce to discuss sensitive records. UMS would like to be able to add new members but does not want non-members to be able to see any information about the forum. 
 What should a Platform Administrator configure to achieve this? 
 A. Chatter Unlisted Group 
@@ -613,8 +673,8 @@ C. Chatter Public Group
 D. Private Chatter Channel 
 Answer: A 
 Explanation: 
-To facilitate the discussion of "sensitive records" where even the existence of the group must be hidden from non-members, a Chatter Unlisted Group is the appropriate solution. Unlike a Private Group (Option B), which can be seen in searches and lists even if the content is hidden, an Unlisted Group does not appear in search results and requires an explicit invitation to join. This ensures that only members know the forum exists, meeting the highest privacy requirement. Public Groups (Option C) are visible to everyone and are not suitable for sensitive discussions42. "Private Chatter Channel" (Option D) is not a standard term for this type of collaboration group. Unlisted groups must 
-25
+To facilitate the discussion of "sensitive records" where even the existence of the group must be hidden from non-members, a Chatter Unlisted Group is the appropriate solution. Unlike a Private Group (Option B), which can be seen in searches and lists even if the content is hidden, an Unlisted Group does not appear in search results and requires an explicit invitation to join. This ensures that only members know the forum exists, meeting the highest privacy requirement. Public Groups (Option C) are visible to everyone and are not suitable for sensitive discussions. "Private Chatter Channel" (Option D) is not a standard term for this type of collaboration group. Unlisted groups must 
+
 
 be enabled in Chatter Settings before they can be created by administrators. 
 NO.53 Ursa Major Solar's Platform Administrator is editing the page layout for a new custom object. A text area field is accidentally removed from the page layout, and it needs to be restored to the page layout. What are two methods for achieving this goal? 
@@ -635,7 +695,7 @@ Explanation:
 A Chatter Stream is a custom feed that users (or administrators) can create to consolidate updates from multiple sources. You can combine feeds from specific groups, individual people (like the CEO), and specific records into a single view. This allows users to stay organized and monitor diverse sets of information in one place without having to navigate between different groups or records. A Chatter Group (Option A) is for a specific set of members. A Daily Digest (Option B) is an email summary. A Chatter Feed (Option C) is a general term for the individual lists of updates but does not natively allow for the targeted "multi-source" consolidation that a Stream provides. 
 NO.55 Users at DreamHouse Realty are only allowed to see opportunities they own. Leadership wants an enterprise- wide dashboard of all open opportunities in the pipeline so that users can see how the company is performing at any point in time. How should a Platform Administrator create the dashboard without changing any sharing settings? 
 A. Create a dashboard with the running user set as someone who can see all opportunities. B. Add a filter to the dashboard to filter the opportunities by owner role. 
-C. Build individual dashboards for profiles that need to see the enterprise results. 26
+C. Build individual dashboards for profiles that need to see the enterprise results. 
 
 D. Update the dashboard folder settings to manager for the sales reps role. 
 Answer: A 
@@ -648,7 +708,7 @@ C. Case Assignment Rules with Business Hours
 D. Milestones with Business Hours 
 Answer: D 
 Explanation: 
-To track specific stages of a support process and measure the time elapsed within those stages, Salesforce provides Entitlements and Milestones. Milestones represent required steps in a support process, such as "First Response Time" or "Resolution Time"363636. When combined with Business Hours, Milestones allow the system to accurately calculate how long a case has been in a particular status or assigned to a specific team, excluding weekends or non-working hours. This provides leadership with granular reporting on "Team Performance" and SLA compliance. Escalation Rules (Option A) and Assignment Rules (Option C) are primarily routing tools; they can move a case but do not natively provide the timestamp-based tracking and reporting necessary to see duration across multiple "handoffs". Record-Triggered Flows (Option B) could theoretically be used to stamp fields, but this would require significant custom development and would not offer the native, out-of-the box reporting dashboards that come with the Milestones feature40. Therefore, Entitlement Management is the standard solution for tracking time-based service metrics41. 
+To track specific stages of a support process and measure the time elapsed within those stages, Salesforce provides Entitlements and Milestones. Milestones represent required steps in a support process, such as "First Response Time" or "Resolution Time". When combined with Business Hours, Milestones allow the system to accurately calculate how long a case has been in a particular status or assigned to a specific team, excluding weekends or non-working hours. This provides leadership with granular reporting on "Team Performance" and SLA compliance. Escalation Rules (Option A) and Assignment Rules (Option C) are primarily routing tools; they can move a case but do not natively provide the timestamp-based tracking and reporting necessary to see duration across multiple "handoffs". Record-Triggered Flows (Option B) could theoretically be used to stamp fields, but this would require significant custom development and would not offer the native, out-of-the box reporting dashboards that come with the Milestones feature. Therefore, Entitlement Management is the standard solution for tracking time-based service metrics. 
 NO.57 Management at Universal Containers would like to share dashboard components with their team in Chatter but currently does not have access to this capability. How should a Platform Administrator make this functionality available to management? 
 A. Enable reporting snapshots. 
 B. Select Download Chart on the component. 
@@ -656,7 +716,7 @@ C. Set View Dashboard As to the dashboard viewer.
 D. Enable dashboard feed tracking. 
 Answer: D 
 Explanation: 
-To allow users to post snapshots of dashboard components and engage in discussions about data 27
+To allow users to post snapshots of dashboard components and engage in discussions about data 
 
 directly on the dashboard, the Platform Administrator must enable Feed Tracking for dashboards. In Salesforce, Chatter Feed Tracking allows changes to records and interactions to be tracked and shared in the Chatter feed. For dashboards specifically, enabling this feature allows users to "Follow" a dashboard and use the "Post to Feed" functionality on individual dashboard components. This is highly effective for management teams who want to call out specific successes or areas of concern by tagging team members in a post that includes the visual chart. Reporting snapshots (Option A) are used for historical trend reporting, not social sharing. Downloading charts (Option B) is a manual file handling process rather than an integrated social feature. Setting the "View Dashboard As" (Option C) determines data visibility but does not control Chatter functionality. 
 NO.58 A sales rep typically has several open opportunities for each of their accounts. Which tool should a Platform Administrator suggest to the sales rep to obtain the total number of accounts associated with open opportunities in a report? 
@@ -667,14 +727,14 @@ D. Group Rows
 Answer: C 
 Explanation: 
 When a report contains many rows where the same Account name appears multiple times (due to having several opportunities), a simple count of rows will not accurately represent the number of distinct accounts. 
-To find the specific number of individual accounts, the Platform Administrator should use the Unique Count feature on the Account Name or Account ID column in the report builder. Selecting "Show Unique Count" provides a total at the bottom of the report (and in summary groupings) that counts each unique value only once, regardless of how many times it appears in the list. Bucket Columns (Option A) group data into categories46. Report Filters (Option B) exclude records47. Grouping Rows (Option D) visually organizes the report by Account but does not inherently provide a single summary number for the count of distinct accounts in the way that Unique Count does. 
+To find the specific number of individual accounts, the Platform Administrator should use the Unique Count feature on the Account Name or Account ID column in the report builder. Selecting "Show Unique Count" provides a total at the bottom of the report (and in summary groupings) that counts each unique value only once, regardless of how many times it appears in the list. Bucket Columns (Option A) group data into categories. Report Filters (Option B) exclude records. Grouping Rows (Option D) visually organizes the report by Account but does not inherently provide a single summary number for the count of distinct accounts in the way that Unique Count does. 
 NO.59 A Platform Administrator deactivates an agent to add a new topic and action. What happens to any ongoing user conversations with the agent? 
 A. The agent will pause the conversation and resume once reactivated. 
 B. The agent will continue conversations using the deactivated agent until reactivated. C. The agent window automatically closes to prevent new messages. 
 D. The agent will send a system error message as a response to any new messages. Answer: B 
 Explanation: 
 In the Agentforce environment, deactivating an agent to make configuration changes (like adding a Topic or Action) does not immediately terminate existing sessions. To ensure a smooth user experience, Salesforce allows ongoing conversations to continue using the version of the agent that was active when the session started. The "deactivation" simply prevents new sessions from being initiated. Once the administrator reactivates the agent, new sessions will utilize the updated configuration, while current users finish their interactions without interruption or "system errors". The window does not automatically close, and the conversation is not "paused" in a way that 
-28
+
 
 requires the user to wait for reactivation 
 
@@ -694,7 +754,7 @@ NO.61 When a qualified lead is converted, what happens to its related records? A
 B. Open activities only are attached to the resulting contact, account, and opportunity records. C. All activities are attached to the resulting contact, account, and opportunity records. D. Campaign history is attached to the resulting contact, account, and opportunity records. Answer: C 
 Explanation: 
 During the Lead Conversion process, Salesforce automatically transfers the history and interaction data associated with the Lead to the newly created Account, Contact, and Opportunity. This includes all activities, meaning both Open Activities (like upcoming tasks or events) and Activity History (like past emails or logged calls) are attached to the resulting records to maintain a complete customer timeline. Campaign history is also typically associated with the resulting Contact, but the question specifically asks about "related records" in a broader sense, and the transfer of all activities is a 
-29
+
 
 primary mechanical function of the conversion. Option A is incorrect because custom object records do not automatically move unless specific custom mapping or code is in place. Option B is incorrect because the system does not limit the transfer to only open activities. 
 NO.62 The call center manager at Ursa Major Solar wants to provide agents with a case dashboard that can be drilled down by case origin, status, and owner. What should a Platform Administrator add to the dashboard to fulfill the request? 
@@ -716,7 +776,7 @@ The Salesforce AppExchange is a vast marketplace designed to extend the function
 * Components:Administrators can find pre-built Lightning Components (A) to enhance record pages, such as custom maps, weather widgets, or specialized data entry forms. These can be dragged and dropped directly in the Lightning App Builder. 
 * Consultants: The AppExchange also serves as a directory for certified Salesforce Consultants (D). This allows organizations to find and vet professional partners who specialize in specific industries or technical implementations to help them scale their Salesforce instance. 
 While "Communities" (Option C) refers to a Salesforce product (now Experience Cloud), you don't "find" them on the AppExchange to enhance an org; rather, you might find packages to enhance them. "Customers" (Option B) are not a solution found on the marketplace. By leveraging the AppExchange, a Platform Administrator can quickly implement proven solutions without the need for extensive internal development. 
-30
+
 
 NO.64 Senior leadership wants to be notified of any opportunities over $250,000 with more than a 75% probability of closing. Which feature should a Platform Administrator set up to facilitate this? A. Guidance for Success 
 B. Big Deal Alerts 
@@ -736,7 +796,7 @@ A Validation Rule is the correct tool for enforcing conditional data entry requi
 100% data compliance. Dependent picklists (Options A and D) are used to filter available options in one list based on the selection of another, but they cannot "require" a value to be present based on a stage change in the same way a validation rule can. Making the stage "Read Only" (Option B) would prevent users from ever winning a deal. Validation rules are the standard method for maintaining data quality during critical transitions in the sales lifecycle. 
 NO.66 Sales reps at Ursa Major Solar are having difficulty managing deals. The leadership team has asked a Platform Administrator to help sales reps prioritize and close more deals. What should the administrator configure to help with these issues? 
 A. Einstein Search Personalization 
-31
+
 
 B. Einstein Lead Scoring C. Einstein Opportunity Scoring D. Einstein Activity Capture Answer: C 
 Explanation: 
@@ -745,7 +805,7 @@ Explanation:
 To help sales reps prioritize their pipeline and identify which deals are most likely to close, Einstein Opportunity Scoring is the most effective tool. Part of Salesforce's AI suite, Opportunity Scoring uses machine learning to analyze past won and lost opportunities to assign a score from 1 to 99 to every open deal. 
 The score is accompanied by "Key Factors"-both positive and negative-that explain why the score was given (e.g., "The deal has progressed quickly through stages" or "The close date has been pushed three times"). This allows reps to focus their time on high-scoring deals or take corrective action on deals with low scores. Einstein Lead Scoring (Option B) helps with the intake of new prospects but not with existing deals. 
 Einstein Activity Capture (Option D) automates the logging of emails and events but does not provide prioritization logic. Einstein Search (Option A) improves search results but does not assist in deal management strategy. 
-NO.67 Users have reported that the new Lightning account record page is loading very slowly. Which feature should a Platform Administrator use to determine the cause of the performance issues?2424 A. Lightning Usage App 
+NO.67 Users have reported that the new Lightning account record page is loading very slowly. Which feature should a Platform Administrator use to determine the cause of the performance issues? A. Lightning Usage App 
 B. Lightning Analytics 
 C. Lightning Page Visibility Rule 
 D. Lightning App Builder Analytics 
@@ -759,7 +819,7 @@ C. Routes to a live agent
 D. Asks for additional information 
 Answer: D 
 Explanation: 
-32
+
 
 In an agentic loop, the AI agent iteratively tries to solve a user's request by calling actions and evaluating the results. If the results of those actions are unsatisfactory (e.g., the data returned doesn't answer the prompt or a required input is missing), the agent's next logical step is to ask for additional information. By clarifying the user's intent or requesting the missing data point, the agent can initiate a new loop with better inputs. Giving up with an error message (Option B) or providing a "best guess" (Option A) are considered failures of the reasoning process. Routing to a live agent (Option C) is an escalation step that typically happens after the agent has failed to resolve the issue even after clarification, or if the user explicitly asks for human help. 
 NO.69 A sales manager at Cloud Kicks would like a dashboard to emphasize some important data and tell a more compelling data story to the sales reps. How should a Platform Administrator achieve this for the sales manager? 
@@ -777,10 +837,10 @@ C. AND(ISPICKVAL(LeadSource,'Other'), ISBLANK(Source__c))
 D. AND(NOT(ISPICKVAL(LeadSource,'Other'))), NOT(ISBLANK(Source__c)) 
 Answer: C 
 Explanation: 
-In Salesforce, validation rules use formulas to verify if the data entered by a user meets specific criteria before saving the record1. To check the value of a picklist field like LeadSource, the ISPICKVAL() function must be used, as picklist fields do not support standard text operators like "=" in validation formulas2. The requirement is to block the save if LeadSource is "Other" but the Source__c text field is empty3. The ISBLANK() function effectively checks if a text field contains no data4. Therefore, the correct logic uses AND() to trigger the error message only when both conditions are met: the picklist is set to "Other" AND the text field is blank5. Option A is incorrect because it treats a 
-33
+In Salesforce, validation rules use formulas to verify if the data entered by a user meets specific criteria before saving the record. To check the value of a picklist field like LeadSource, the ISPICKVAL() function must be used, as picklist fields do not support standard text operators like "=" in validation formulas. The requirement is to block the save if LeadSource is "Other" but the Source__c text field is empty. The ISBLANK() function effectively checks if a text field contains no data. Therefore, the correct logic uses AND() to trigger the error message only when both conditions are met: the picklist is set to "Other" AND the text field is blank. Option A is incorrect because it treats a 
 
-picklist like a text field6. Option B and D use NOT() logic, which would trigger errors in the wrong scenarios. 
+
+picklist like a text field. Option B and D use NOT() logic, which would trigger errors in the wrong scenarios. 
 NO.71 Cloud Kicks wants to ensure that every client has support based on the level of service that has been agreed on in the sales cycle. There are tiers to this support model, Gold, Silver, and Bronze. What should a Platform Administrator create to ensure that this is part of every client's account once they become a client? 
 A. A flow to assign Entitlements 
 B. Routing Configuration for each client 
@@ -790,7 +850,7 @@ Answer: A
 Explanation: 
 To manage different levels of support service (Gold, Silver, Bronze), Salesforce uses the Entitlement Management feature. An "Entitlement" defines the specific type of support a customer is eligible for. To 
 "ensure that this is part of every client's account" automatically, a Platform Administrator should use Flow Builder. A record-triggered flow can be set to run whenever an Account is updated to "Customer" status or when a specific "Service Level" field is populated. The flow can then automatically create or link an Entitlement record to that Account. This ensures that when a new case is opened, the support agent immediately sees the SLA (Service Level Agreement) associated with that customer. Routing Configurations (Option B) and Assignment Rules (Option D) handle who gets the case, but they do not define the level of service. Email-to-Case (Option C) is an intake method, not a service-level tracking tool. 
-NO.72 Which Salesforce feature allows a Platform Administrator to automate3the routing of records to specific users for review and decision-making based on predefined criteria? A. Assignment Rules 
+NO.72 Which Salesforce feature allows a Platform Administrator to automate the routing of records to specific users for review and decision-making based on predefined criteria? A. Assignment Rules 
 B. Validation Rules 
 C. Approval Process 
 D. Schema Builder 
@@ -798,16 +858,16 @@ Answer: C
 Explanation: 
 An Approval Process is the dedicated Salesforce feature for managing workflows that require human "review and decision-making." Unlike Assignment Rules (Option A), which simply change the owner of a record, an Approval Process locks the record to prevent further changes and routes a formal request to an "Approver." This approver can then choose to Approve, Reject, or Reassign the request. The process can include multiple steps, entry criteria (e.g., "only if discount > 10%"), and specific automated actions that occur once the final decision is made. Validation Rules (Option B) are used to prevent saving bad data, not for routing. Schema Builder (Option D) is a visualization tool for the data model. Therefore, when a business process requires an official "sign-off" or "decision," the Approval Process engine is the correct architectural choice. 
 NO.73 A Platform Administrator is designing a prompt template for a new agent. The agent's purpose is to help service reps troubleshoot technical issues by providing concise, step-by-step 
-34
 
-instructions. Based on best practices for creating effective prompts, which approach should the administrator use when writing this prompt?16 
+
+instructions. Based on best practices for creating effective prompts, which approach should the administrator use when writing this prompt? 
 A. Write a detailed prompt with multiple nested conditions to cover all the major troubleshooting scenarios. 
 B. Use specific technical terms and abbreviations to ensure the AI understands the specialised domain. 
 C. Focus on providing high-level, theoretical concepts so the AI has the flexibility to respond creatively. 
 D. Use natural, easy-to understand language and clear, concise instructions to guide the AI's behavior. 
 Answer: D 
 Explanation: 
-Creating effective Agentforce prompts requires a focus on clarity and simplicity to ensure the Large Language Model (LLM) follows instructions accurately. According to Salesforce best practices, administrators should use natural, easy-to-understand language and provide clear, concise instructions1919. This approach helps the AI accurately reason through the task without becoming confused by overly complex or nested logic (Option A). While technical accuracy is important, relying heavily on jargon or abbreviations (Option B) can sometimes lead to unexpected results if the LLM interprets those terms differently in various contextsFurthermore, providing high-level theoretical concepts (Option C) often results in vague or "creative" answers that may not be helpful for technical troubleshooting, which requires specific and actionable steps22. 
+Creating effective Agentforce prompts requires a focus on clarity and simplicity to ensure the Large Language Model (LLM) follows instructions accurately. According to Salesforce best practices, administrators should use natural, easy-to-understand language and provide clear, concise instructions. This approach helps the AI accurately reason through the task without becoming confused by overly complex or nested logic (Option A). While technical accuracy is important, relying heavily on jargon or abbreviations (Option B) can sometimes lead to unexpected results if the LLM interprets those terms differently in various contextsFurthermore, providing high-level theoretical concepts (Option C) often results in vague or "creative" answers that may not be helpful for technical troubleshooting, which requires specific and actionable steps. 
 Using direct instructions like "Summarize the issue in three bullet points" is more effective than broad guidelines. 
 NO.74 What are three characteristics of a master-detail relationship? 
 A. Permissions for the detail record are set independently of the master. 
@@ -822,7 +882,7 @@ A Master-Detail Relationship is a tight coupling between two objects that provid
 * Roll-up Summaries:This relationship type is the only one that natively supports Roll-up Summary fields, allowing the master record to calculate counts, sums, or averages of fields on the detail records (Option C). 
 * Ownership and Security: The detail record inherits its owner and its security/sharing settings from the master record. Consequently, there is no "Owner" field on a detail record; it is always owned by the owner of the master (Option D). 
 Option A is incorrect because detail records cannot have independent permissions. Option E is incorrect because an object can only have a maximum of two master-detail relationships. This relationship is ideal for parent-child scenarios where the child's existence is entirely dependent on 
-35
+
 
 the parent. 
 NO.75 Universal Containers requires that when an opportunity is closed won, all other open opportunities on the same account must be rendered as Closed Lost. Which automation solution should a Platform Administrator use to implement this request? 
@@ -832,8 +892,8 @@ C. Flow Orchestration
 D. Quick Action 
 Answer: A 
 Explanation: 
-Flow Builderis the recommended tool for automating updates to multiple related records based on a change to a single record. A "Record-Triggered Flow" can be configured to execute whenever an Opportunity is updated to "Closed Won". The flow can then find all other Opportunities related to the same Account where the "IsClosed" field is false, and use anUpdate Recordselement to set their stage to "Closed Lost". Outbound Messages (Option B) are used for notifying external systems, not for internal data updates31. Flow Orchestration (Option C) is designed for multi-user, complex business processes and would be overly complicated for this simple record update32. Quick Actions (Option D) require a user to click a button, which does not meet the requirement for automatic rendering upon the stage change33. 
-NO.76 Users have reported that the new Lightning account record page is loading very slowly. Which feature should a Platform Administrator use to determine the cause of the performance issues?2424 A. Lightning Analytics 
+Flow Builderis the recommended tool for automating updates to multiple related records based on a change to a single record. A "Record-Triggered Flow" can be configured to execute whenever an Opportunity is updated to "Closed Won". The flow can then find all other Opportunities related to the same Account where the "IsClosed" field is false, and use anUpdate Recordselement to set their stage to "Closed Lost". Outbound Messages (Option B) are used for notifying external systems, not for internal data updates. Flow Orchestration (Option C) is designed for multi-user, complex business processes and would be overly complicated for this simple record update. Quick Actions (Option D) require a user to click a button, which does not meet the requirement for automatic rendering upon the stage change. 
+NO.76 Users have reported that the new Lightning account record page is loading very slowly. Which feature should a Platform Administrator use to determine the cause of the performance issues? A. Lightning Analytics 
 B. Lightning Usage App 
 C. Lightning Page Visibility Rule 
 D. Lightning App Builder Analytics 
@@ -842,49 +902,49 @@ Explanation:
 The Lightning App Builder includes a built-in Analysis tool (often referred to as Page Analysis or Analytics) that provides administrators with a performance score for a record page. This tool evaluates the page's metadata and components to identify factors that contribute to slow load times, such as having too many fields in a single section, using complex related lists, or including multiple heavy Lightning Web Components. It provides specific suggestions, such as using "Dynamic Forms" to break up the page or moving less-used components into separate tabs to improve the "time to interact" for the user. The Lightning Usage App (Option B) provides broad metrics on adoption and browser usage across the whole org but does not offer granular, component-level performance analysis for a single record page. Visibility Rules (Option C) are for showing/hiding content, not for technical performance auditing. 
 NO.77 A Platform Administrator at Cloud Kicks is trying to set up a new user but receives an error about a duplicate username when trying to save the user record. What is causing this error to happen? 
 A. The username was not configured in the format of an email address. 
-B. The email address and username must be unique across all Salesforce orgs. 36
+B. The email address and username must be unique across all Salesforce orgs. 
 
 C. The username must be unique across all Salesforce orgs. D. The username has a restricted domain name within it. Answer: C 
 Explanation: 
 
 
-In the Salesforce architecture, the Username is a globally unique identifier4949. This means that once a username (e.g., admin@cloudkicks.com) is used in any Salesforce organization (including production, sandboxes, and developer editions), it cannot be used again in any other organization worldwide. This often causes confusion because while an Email Address can be reused across multiple Salesforce users and orgs, the Username must remain distinct51. If an administrator receives a duplicate username error, it means the desired username is already taken by a user in another instance of Salesforce. 54Option A is incorrect because usernames must be in email format, but they don't have to be a valid functioning email. Option B is incorrect because only the username has this global uniqueness requirement, not the email address. 
+In the Salesforce architecture, the Username is a globally unique identifier. This means that once a username (e.g., admin@cloudkicks.com) is used in any Salesforce organization (including production, sandboxes, and developer editions), it cannot be used again in any other organization worldwide. This often causes confusion because while an Email Address can be reused across multiple Salesforce users and orgs, the Username must remain distinct. If an administrator receives a duplicate username error, it means the desired username is already taken by a user in another instance of Salesforce. Option A is incorrect because usernames must be in email format, but they don't have to be a valid functioning email. Option B is incorrect because only the username has this global uniqueness requirement, not the email address. 
 NO.78 Northern Trail Outfitters uses a custom Invoice object to collect customer payment information from an external billing system. The Billing System field needs to be filled in on every Invoice record. How should a Platform Administrator ensure this requirement? A. Create a flow to update the field. 
 B. Require the field on the record type. 
 C. Define an approval process for the field. 
 D. Make the field universally required. 
 Answer: D 
 Explanation: 
-To ensure that a field is populated on every single record, regardless of how it is created (manually, via API, or through an integration), the best method is to make the field universally required at the field definition level. When a field is marked as "Required" in the Object Manager, the Salesforce database will reject any attempt to save a record if that field is empty. While requiring a field on a Page Layout or Record Type (Option B) provides a good user experience for manual entry, it does not prevent records from being created without that data via the API or background processes25. Using a flow (Option A) to update the field is reactive rather than preventative26. Universal requirement is the most robust way to maintain data integrity for critical fields like "Billing System" that are essential for reporting and external system alignment. 
+To ensure that a field is populated on every single record, regardless of how it is created (manually, via API, or through an integration), the best method is to make the field universally required at the field definition level. When a field is marked as "Required" in the Object Manager, the Salesforce database will reject any attempt to save a record if that field is empty. While requiring a field on a Page Layout or Record Type (Option B) provides a good user experience for manual entry, it does not prevent records from being created without that data via the API or background processes. Using a flow (Option A) to update the field is reactive rather than preventative. Universal requirement is the most robust way to maintain data integrity for critical fields like "Billing System" that are essential for reporting and external system alignment. 
 NO.79 An agent is being developed with several actions that all retrieve information from different databases. A Platform Administrator has named the actions as follows: GetCustomerInfo, GetOrderDetails, GetShippingStatus. Which best practice should the administrator follow to improve these names? 
 A. Remove all verbs and use only nouns, such as CustomerInfo, OrderDetails, and ShippingStatus. B. Add the word "Salesforce" to the beginning of each action name to improve context for the large language model. 
 C. Use a consistent naming convention by starting each action with the verb "Get". D. Use additional related verbs, such as Find, Retrieve, or Identify. 
 Answer: C 
 Explanation: 
-When naming actions for an AI agent, consistency is key to helping the Large Language Model (LLM) 37
+When naming actions for an AI agent, consistency is key to helping the Large Language Model (LLM) 
 
 categorize and understand the available tools. Following a consistent naming convention, such as starting all retrieval actions with the verb "Get," allows the agent to more easily map user intent (e.g., "I need information about...") to the appropriate action. This reduces ambiguity during the reasoning phase of the agentic loop. 
 Using inconsistent verbs like Find, Retrieve, or Identify (Option D) can confuse the model regarding which action is most appropriate for a given task. Removing verbs entirely (Option A) makes it harder for the model to distinguish between an action (doing something) and a data object (a thing). Adding "Salesforce" (Option B) is generally redundant as the agent's context is already within the Salesforce environment. 
-NO.80 Cloud Kicks has three teams of customer service reps that use a custom field on the Case object to populate the team assigned to manage the tickets. The customer support manager would like a Custom Dashboard to show data specific to each team. What should a Platform Administrator do to meet this requirement?55 
+NO.80 Cloud Kicks has three teams of customer service reps that use a custom field on the Case object to populate the team assigned to manage the tickets. The customer support manager would like a Custom Dashboard to show data specific to each team. What should a Platform Administrator do to meet this requirement?
 A. Create separate Dashboards for each Customer Support team. 
 B. Create a Dashboard with widgets specific to each team. 
 C. Create a Dashboard that uses Dashboard filters to show specific team data. D. Add Cross Filters to switch between the three customer service teams. 
 Answer: C 
 Explanation: 
 To avoid the administrative burden of creating and maintaining multiple identical dashboards for different teams, a Platform Administrator should use Dashboard Filters. By adding a filter based on the "Team Assigned" custom field, the administrator can create a single dashboard that the manager can toggle between 
-"Team A," "Team B," and "Team C". Each time a filter value is selected, all components on the dashboard that use that field (or a mapped equivalent) will automatically refresh to show the data relevant only to that team. Creating separate dashboards (Option A) is inefficient and leads to "dashboard sprawl". Adding specific widgets for every team on one dashboard (Option B) would result in a cluttered and confusing interface61. 
+"Team A," "Team B," and "Team C". Each time a filter value is selected, all components on the dashboard that use that field (or a mapped equivalent) will automatically refresh to show the data relevant only to that team. Creating separate dashboards (Option A) is inefficient and leads to "dashboard sprawl". Adding specific widgets for every team on one dashboard (Option B) would result in a cluttered and confusing interface. 
 Cross Filters (Option D) are a reporting feature used to filter records based on their relationship to other objects, not a dashboard-level viewing tool. 
-NO.81 Cloud Kicks needs to change the owner of a case when it has been open for more than 7 days. What should a Platform Administrator use to complete this requirement?47 
+NO.81 Cloud Kicks needs to change the owner of a case when it has been open for more than 7 days. What should a Platform Administrator use to complete this requirement? 
 A. Escalation Rules 
 B. Auto Response Rules 
 C. Assignment Rules 
 D. Validation Rules 
 Answer: A 
 Explanation: 
-Escalation Rulesare designed specifically to perform actions when a Case record has remained in a certain state (like "Open") for a specified period. In this scenario, the Platform Administrator would set an escalation rule entry with the age set to 168 hours (7 days). When this time threshold is reached, the rule can automaticallyreassign the caseto a new owner or a management queue51. Assignment Rules (Option C) are only triggered upon the initial creation of a record or when manually 
-38
+Escalation Rulesare designed specifically to perform actions when a Case record has remained in a certain state (like "Open") for a specified period. In this scenario, the Platform Administrator would set an escalation rule entry with the age set to 168 hours (7 days). When this time threshold is reached, the rule can automatically assign the case to a new owner or a management queue. Assignment Rules (Option C) are only triggered upon the initial creation of a record or when manually 
 
-triggered by a user, and they do not have a built-in "timer" capability to fire days later52. Auto Response Rules (Option B) are only for sending automated emails to customers, not for internal ownership changes53. Validation Rules (Option D) are used to prevent data entry errors and cannot change record ownership54. 
+
+triggered by a user, and they do not have a built-in "timer" capability to fire days later. Auto Response Rules (Option B) are only for sending automated emails to customers, not for internal ownership changes. Validation Rules (Option D) are used to prevent data entry errors and cannot change record ownership. 
 NO.82 The Cloud Kicks sales team has asked that two of the fields that appear on the Opportunity cards in Kanban view be changed to make the cards more meaningful. Which feature should a Platform Administrator access to make this change? 
 A. Record Type 
 B. Compact Layout 
@@ -906,7 +966,7 @@ Salesforce Approval Processes allow administrators to define a series of steps t
 * Email Alert:Used to send a templated email to specific users, such as notifying the submitter that their request was granted. 
 * Task:Used to assign a follow-up task to a user. 
 * Outbound Message: Used to send technical data to an external system via API. While modern automation tools like Flow can post to Chatter or launch other flows, the native approval process engine is limited to these four specific actions. For a "time-off request" scenario, an 
-39
+
 
 Email Alert ensures the employee is notified, and a Field Update ensures the record reflects the new status, providing a clear audit trail of the business decision. 
 NO.84 A Platform Administrator at Cloud Kicks has created a screen flow to help service reps ask the same set of questions when customers call in with issues. This screen should be visible from cases. How should the administrator distribute the screen flow? 
@@ -916,8 +976,8 @@ C. Lightning Page
 D. Component Filter 
 Answer: C 
 Explanation: 
-To make a Screen Flow available to users on a specific record, such as a Case, the Platform Administrator should add the Flow component to the Lightning Record Page. Using the Lightning App Builder, the admin can drag the Flow component onto the page and select the specific "Service Question" flow from the list8888. 
-This allows the flow to be embedded directly into the workspace where the service reps are already looking at case details9. While flows can be placed on a Home Page (Option B), that would not provide the case-specific context needed for the reps10. Page Layouts (Option A) are used for standard fields and related lists but do not natively host dynamic screen flow components11. Component Filters (Option D) are used to show or hide the flow based on certain criteria, but the distribution itself is handled by placing it on the Lightning Page12. 
+To make a Screen Flow available to users on a specific record, such as a Case, the Platform Administrator should add the Flow component to the Lightning Record Page. Using the Lightning App Builder, the admin can drag the Flow component onto the page and select the specific "Service Question" flow from the list. 
+This allows the flow to be embedded directly into the workspace where the service reps are already looking at case details. While flows can be placed on a Home Page (Option B), that would not provide the case-specific context needed for the reps. Page Layouts (Option A) are used for standard fields and related lists but do not natively host dynamic screen flow components. Component Filters (Option D) are used to show or hide the flow based on certain criteria, but the distribution itself is handled by placing it on the Lightning Page. 
 NO.85 Northern Trail Outfitters has a new flow that automatically sets field values when a new account is created. 
 The flow is launched by a process, but the flow is not working properly. What should a Platform Administrator do to identify the problem? 
 A. View the Setup Audit Trail and review for errors. 
@@ -928,15 +988,15 @@ Answer: C
 Explanation: 
 The most efficient and descriptive way to troubleshoot a flow is to use the native Debug feature within the Flow Builder. This tool allows the Platform Administrator to "run" the flow in a safe environment, simulating the creation or update of a record. As the flow executes, the Debugger provides a step-by-step panel showing exactly how variables were assigned, which paths were taken in "Decision" elements, and whether any 
 "Update" or "Create" elements failed. It explicitly highlights where an error occurred and provides a detailed error message. While general Debug Logs (Option D) can capture flow information, they are much harder to read and require setting specific trace flags. The Setup Audit Trail (Option A) only shows configuration changes, not runtime errors. Email logs (Option B) are only useful if the flow is failing to send an email. The Flow Debugger is the primary tool for administrators to refine logic and fix issues before activating automation. 
-40
 
-NO.86 Which action should a Platform Administrator configure to reverse a submitted approval request and unlock the associated record when setting up an approval process?99 A. Final Rejection Actions 
+
+NO.86 Which action should a Platform Administrator configure to reverse a submitted approval request and unlock the associated record when setting up an approval process? A. Final Rejection Actions 
 B. Recall Actions 
 C. Final Approval Actions 
 D. Initial Submission Actions 
 Answer: B 
 Explanation: 
-An Approval Process consists of several stages, each with its own set of automated actions. When a record is first submitted, it is typically locked to prevent further edits. If a user needs to "reverse" that submission- perhaps because they realized they made a mistake or the deal terms changed-the administrator must configure Recall Actions12. A recall action is specifically designed to allow the submitter or an administrator to pull the record back out of the approval queue. Common recall actions include a Field Update to change the status back to "Draft" and, most importantly, an action to unlock the record so it can be edited again. Final Rejection Actions (Option A) occur when an approver denies the request, and Final Approval Actions (Option C) occur when the request is fully granted. Initial Submission Actions (Option D) are what lock the record and start the process in the first place. 
+An Approval Process consists of several stages, each with its own set of automated actions. When a record is first submitted, it is typically locked to prevent further edits. If a user needs to "reverse" that submission- perhaps because they realized they made a mistake or the deal terms changed-the administrator must configure Recall Actions. A recall action is specifically designed to allow the submitter or an administrator to pull the record back out of the approval queue. Common recall actions include a Field Update to change the status back to "Draft" and, most importantly, an action to unlock the record so it can be edited again. Final Rejection Actions (Option A) occur when an approver denies the request, and Final Approval Actions (Option C) occur when the request is fully granted. Initial Submission Actions (Option D) are what lock the record and start the process in the first place. 
 NO.87 Which feature gives a sales team the ability to prioritize deals with recent updates in the List view and Kanban view? 
 A. Big Deal Alerts 
 B. Report Filters 
@@ -952,18 +1012,18 @@ B. Use a custom email service to set the owner of the case upon creation.
 C. Utilize a flow to identify the correct queue and assign the case. 
 D. Configure Email-to-Case so emails are delivered to the correct queue. 
 Answer: D 
-41
+
 
 Explanation: 
 The most efficient and standard way to automate case creation from inbound emails is by using Email-to- Case. When setting up Email-to-Case, the Platform Administrator configures "Routing Addresses". For each routing address (e.g., support@company.com or billing@company.com), the administrator can specify a default owner or queue for the cases created via that specific address. This ensures that when a customer sends an email to the "Support" address, it is automatically routed to the Support Queue, and an email to the 
-"Billing" address is routed to the Billing Queue. This configuration is handled directly within the Email-to- Case setup pages and does not require additional escalation rules (Option A) or complex custom flows (Option C) for the initial assignment. While a custom email service (Option B) is possible, it is a developer- centric approach that is generally unnecessary given the robust native capabilities of the standard Email-to- Case feature. This setup streamlines the intake process and ensures that customer issues are immediately visible to the correct service team34. 
+"Billing" address is routed to the Billing Queue. This configuration is handled directly within the Email-to- Case setup pages and does not require additional escalation rules (Option A) or complex custom flows (Option C) for the initial assignment. While a custom email service (Option B) is possible, it is a developer- centric approach that is generally unnecessary given the robust native capabilities of the standard Email-to- Case feature. This setup streamlines the intake process and ensures that customer issues are immediately visible to the correct service team. 
 NO.89 A user is unable to relate a task to the Course custom object. What should a Platform Administrator do to allow tasks to be related to courses? 
 A. Create a sharing rule for the Course object to grant the user Read/Write access. B. Select Allow Activities on the Course object in Object Manager. 
 C. Add the Open Activities related list to the Course page layout. 
 D. Update the user's profile to grant them Edit access to the Task object. 
 Answer: B 
 Explanation: 
-For a custom object to support Tasks and Events, the "Allow Activities" setting must be enabled in the object's properties. When a Platform Administrator creates a custom object, this checkbox is often left unchecked by default35. Enabling this feature allows the "Related To" (WhatId) field on a Task or Event to be linked to records of that custom object type36. While adding the related list to the page layout (Option C) is a necessary step for visibility, it will not work if the underlying feature isn't enabled first37. Sharing rules (Option A) and profile permissions (Option D) manage access to existing records but do not control whether the object is technically capable of having activities associated with it. 
+For a custom object to support Tasks and Events, the "Allow Activities" setting must be enabled in the object's properties. When a Platform Administrator creates a custom object, this checkbox is often left unchecked by default. Enabling this feature allows the "Related To" (WhatId) field on a Task or Event to be linked to records of that custom object type. While adding the related list to the page layout (Option C) is a necessary step for visibility, it will not work if the underlying feature isn't enabled first. Sharing rules (Option A) and profile permissions (Option D) manage access to existing records but do not control whether the object is technically capable of having activities associated with it. 
 NO.90 A Platform Administrator at Universal Containers is asked to restrict login access for users to specific hours and specific IP addresses to help minimize the risk of bad actors getting into the org. Which setting should the administrator update to accomplish this? 
 A. Company Settings 
 B. The user's role 
@@ -973,7 +1033,7 @@ Answer: C
 Explanation: 
 In Salesforce, security restrictions like Login Hours and Login IP Ranges are managed at the Profile level. 
 When these are configured on a profile, they are strictly enforced; if a user attempts to log in outside of the allowed hours or from an unauthorized IP address, the system will deny access entirely. This is one of the most robust ways to secure an organization against unauthorized access. Company 
-42
+
 
 Settings (Option A) can set 
 
@@ -997,7 +1057,7 @@ D. User management settings in setup
 Answer: C 
 Explanation: 
 The Company Information page in the Setup menu is the "source of truth" for an organization's high level metadata and licensing. In the User Licenses related list on this page, the administrator can see every license type purchased (e.g., Salesforce, Salesforce Platform, Force.com), the total number of seats allocated, the number of seats currently in use, and the number of remaining available licenses. This is the first place an administrator should look for budgeting and capacity planning. "Usage-based entitlements" (Option A) tracks limited-resource features like Login minutes or Data Cloud credits, but not standard seat-based user licenses. 
-43
+
 
 Searching for license types (Option B) or checking user management settings (Option D) will not provide a consolidated summary of the total license pool. 
 NO.93 A Platform Administrator at Universal Containers is trying to deactivate a user who has left the company but is unable to do so. What is preventing the administrator from deactivating this user? 
@@ -1016,7 +1076,7 @@ D. Dashboard Subscriptions
 Answer: C 
 Explanation: 
 In Salesforce, a dashboard's running user determines which data is displayed to anyone viewing the dashboard. If a dashboard is configured with a "Static" running user (e.g., a Support Manager who has "View All" permissions), every user who views that dashboard will see the manager's level of data, regardless of their own personal sharing permissions. This bypasses the Organization-Wide Default (OWD) of "Private" for the Case object. When the support manager observes that reps can see all cases on a group dashboard, it is almost certainly because the dashboard is "running" as a user with high-level access. To correct this and ensure users only see data they are entitled to, the Platform Administrator should convert it into a Dynamic Dashboard. A dynamic dashboard is set to "Run as the logged-in user," meaning the data reflected in the components will automatically filter based on the individual viewer's specific sharing rules and record ownership. This ensures that the dashboard remains a useful tool for the team while strictly adhering to the company's data privacy and security requirements. 
-NO.95 A Platform Administrator at Cloud Kicks has a custom picklist field on Lead, which is missing 44
+NO.95 A Platform Administrator at Cloud Kicks has a custom picklist field on Lead, which is missing 
 
 on the Contact when leads are converted. Which two steps should the administrator take to ensure these values are populated? 
 A. Update the picklist value with a validation rule. 
@@ -1025,8 +1085,8 @@ C. Map the picklist field on the Lead to the Contact.
 D. Set the picklist field to be required on the Lead object. 
 Answer: B C 
 Explanation: 
-2 
-When a Lead is converted into an Account, Contact, and Opportunity, standard fields are mapped automatically. However, custom fields require manual configuration to ensure d3ata flows through the conversion process. First, the Platform Administrator must create a corresponding custom picklist field on the Contact object (Option B) with the same values as the Lead field. Second, the administrator must go to the Lead Object Manager, select "Fields & Relationships," and click Map Lead Fields (Option C). Here, the admin explicitly maps the Lead custom picklist to the newly created Contact custom picklist. Without this mapping, the data will be lost during conversion. Validation rules (Option A) and making the field required (Option D) ensure data exists on the Lead but do not facilitate the transfer of that data to the Contact. 
+
+When a Lead is converted into an Account, Contact, and Opportunity, standard fields are mapped automatically. However, custom fields require manual configuration to ensure data flows through the conversion process. First, the Platform Administrator must create a corresponding custom picklist field on the Contact object (Option B) with the same values as the Lead field. Second, the administrator must go to the Lead Object Manager, select "Fields & Relationships," and click Map Lead Fields (Option C). Here, the admin explicitly maps the Lead custom picklist to the newly created Contact custom picklist. Without this mapping, the data will be lost during conversion. Validation rules (Option A) and making the field required (Option D) ensure data exists on the Lead but do not facilitate the transfer of that data to the Contact. 
 NO.96 A Platform Administrator at Cloud Kicks is setting up a new Salesforce instance. The business requirements mandate that the marketers are given access to opportunities in order to maintain the campaign relationships on each opportunity. The administrator decides to assign the Marketing User profile. What should the administrator do next to achieve this requirement? 
 A. Edit the object permissions to include Opportunity. 
 B. Add a custom permission set to include Opportunity. 
@@ -1038,7 +1098,7 @@ Profiles in Salesforce serve as the foundation for what a user can "do" with rec
 If the organization is using a custom profile based on the Marketing User template, the admin should edit the object permissions directly on that profile to include "Read" and "Edit" for Opportunities. This allows the marketers to view the records and update the "Primary Campaign Source" field. While a Permission Set could also grant this access, the question implies the admin is currently configuring the profile itself. Adjusting the profile's object permissions is the direct way to align the user's capabilities with the business's functional requirements. 
 NO.97 A manager wants the sales team to update their opportunities on a regular basis. Which feature should a Platform Administrator implement to help with this? 
 A. Similar Opportunities 
-45
+
 
 B. Opportunity Update Reminders C. Big Deal Alerts 
 D. Scheduled Reports 
@@ -1056,7 +1116,7 @@ To manage a structured, multi-step sign-off requirement like the one described b
 NO.99 The sales reps at Cloud Kicks should be able to report on each other's account and opportunity records with the organization-wide default for Account and Opportunity both set to Private. What should a Platform Administrator do to achieve this? 
 A. Create an owner-based sharing rule for Accounts with sharing between a Public Group of Sales Reps and Read Only Opportunity Access. 
 B. Create an Account and Opportunity report to show any owned by each member of the Sales Team and save the report into a shared report folder. 
-46
+
 
 C. Utilize Apex sharing to programmatically share records between a group of Sales Rep users. D. Create manual sharing to share specific account and opportunity records between the sales reps. Answer: A 
 Explanation: 
@@ -1078,7 +1138,7 @@ D. Set View Dashboard As to Another person.
 Answer: B 
 Explanation: 
 A Dynamic Dashboard is a specific type of dashboard where the data displayed changes based on which user is currently viewing it. By setting the "View Dashboard As" property to "The logged-in user," the dashboard components will respect each individual user's sharing settings, role hierarchy, 
-47
+
 
 and record ownership. For example, if a sales rep views a dynamic dashboard, they might only see their own $100k pipeline, while their manager viewing the same dashboard would see the team's combined $1M pipeline. This eliminates the need for an administrator to create and maintain dozens of identical dashboards for different individuals. 
 Dashboard Filters (Option A) allow users to narrow down data but do not change the fundamental "running user" security context. Setting the dashboard to run as "Me" (the admin) or "Another person" (Options C and D) creates a static view where everyone sees the same data, which is the opposite of providing an individualized view. 
@@ -1095,7 +1155,7 @@ Answer: A C
 Explanation: 
 The Lightning App Builder is the primary tool for creating custom user interfaces in both the desktop and mobile versions of Salesforce. For mobile customization, administrators primarily focus on two page types: 
 * App Page:These are custom "landing pages" or "home pages" for an app. They can contain a mix of components like lists, charts, and flows, and they appear as items in the mobile navigation menu. * Record Page: These allow administrators to customize the layout of a specific object (like an Account or a custom Property record) for mobile users. Admins can use "Component Visibility Rules" to show or hide specific sections when the record is viewed on a mobile device, ensuring a 
-48
+
 
 streamlined experience on smaller screens. 
 
@@ -1114,7 +1174,7 @@ C. Create a picklist for Specific Search Engine, and set conditional visibility 
 D. Configure a picklist for Specific Search Engine, and use a validation rule to conditionally show only when Lead Source is "Search Engine". 
 Answer: C 
 Explanation: 
-In Flow Builder, the most efficient and user-friendly way to handle dynamic user interfaces is through 49
+In Flow Builder, the most efficient and user-friendly way to handle dynamic user interfaces is through 
 
 Component Visibility. This feature allows an administrator to set logic on individual screen components (like a picklist) so they only appear when specific criteria are met. In this scenario, the administrator would select the "Specific Search Engine" picklist component within the Flow Screen and configure its visibility to show only when the "Lead Source" screen component equals "Search Engine." This provides a "clean" user experience where the form adapts in real-time to the user's input without requiring the user to navigate to a new screen or trigger a validation error. Validation rules (Option D) are reactive and only tell the user they made a mistake after they try to save, whereas conditional visibility is proactive. Option B is inefficient as it would require multiple screens and complex branching logic, whereas component visibility handles everything within a single screen element. 
 NO.106 A sales manager receives a URL to a Dashboard folder containing several dashboards. However, when the sales manager clicks on the URL, a message appears stating, "We couldn't find the record you're trying to access." What is the reason for this? 
@@ -1132,7 +1192,7 @@ D. Accounts should have a master detail to Shipments.
 Answer: C 
 Explanation: 
 When relating two objects where the child records must persist even if the parent record is deleted, a Lookup Relationship is the correct choice18. In this scenario, the Shipment object should have a lookup field pointing to the Account. Unlike a Master-Detail relationship (Option B), which automatically deletes child records (cascade delete) when the master is deleted, a Lookup relationship allows the child record to remain in the system, either by clearing the lookup field or simply leaving it as is. Option A and D are architecturally incorrect because the relationship field is 
-50
+
 
 always created on the "child" or "many" side of the relationship (Shipments) to point to the "parent" (Account). Using a Lookup relationship ensures data retention for historical shipment tracking while still allowing the shipment items to be visible via a related list on the Account page. 
 NO.108 A Platform Administrator at Cloud Kicks needs to temporarily remove one dashboard from a shared folder with several dashboards to make some required changes. How should the administrator achieve this? 
@@ -1150,9 +1210,9 @@ C. Screen flow
 D. Tableau 
 Answer: B 
 Explanation: 
-Agentforceis built to be dynamic, meaning it doesn't just follow a static script but rather "reasons" through a problem using an agentic loop. The feature that directly allows an agent to adapt its behavior and take specific, real-time steps based on customer input isCustom Actions3. When a customer provides information-such as a specific order number or a request to change an address the agent identifies the user's intent and selects the most relevant action to execute4. These actions can be powered by Flows, Apex, or Prompt Templates, giving the agent the ability to interact with Salesforce data in real-time. While Data Cloud (Option A) provides the data foundation for grounding, it is the actions themselves that define the agent's behavioral capabilities6. Screen flows (Option C) provide a guided UI for humans, but custom actions are what allow the agent to function autonomously7. Tableau (Option D) is an analytics tool and does not drive real-time agent behavior8. 
+Agentforceis built to be dynamic, meaning it doesn't just follow a static script but rather "reasons" through a problem using an agentic loop. The feature that directly allows an agent to adapt its behavior and take specific, real-time steps based on customer input isCustom Actions. When a customer provides information-such as a specific order number or a request to change an address the agent identifies the user's intent and selects the most relevant action to execute. These actions can be powered by Flows, Apex, or Prompt Templates, giving the agent the ability to interact with Salesforce data in real-time. While Data Cloud (Option A) provides the data foundation for grounding, it is the actions themselves that define the agent's behavioral capabilities. Screen flows (Option C) provide a guided UI for humans, but custom actions are what allow the agent to function autonomously. Tableau (Option D) is an analytics tool and does not drive real-time agent behavior. 
 NO.110 A Platform Administrator needs to create a new prompt template to automatically summarize customer cases for a sales team. The administrator wants to dynamically populate the 
-51
+
 
 response with data from the case record. What should the administrator use to display real Salesforce data in an agent response from a prompt template? 
 A. Flow 
@@ -1163,24 +1223,24 @@ Answer: D
 Explanation: 
 When building prompt templates within the Prompt Builder, the most direct way to inject specific record data into the AI's instructions is through Merge Fields. Much like an email template or a mail merge, merge fields allow the administrator to reference specific fields from the object in context-in this case, the Case object. 
 For example, an administrator might use {!$Input:Case.Subject} or {!$Input:Case.Description} within the prompt template. When the agent runs, it replaces these placeholders with the actual data from the specific case record being viewed. This ensures that the AI has the "grounding" information it needs to generate an accurate and relevant summary. While Flows (Option A) can be used for more complex data retrieval, Merge Fields are the standard, low-code tool for simple record-to-prompt data population. Agent Instructions (Option C) provide the "how-to" logic for the AI but do not themselves represent the dynamic data points from the Salesforce database. 
-NO.111 Which component of an approval process defines the chain of approval, determines which records can advance, and specifies where to assign approval requests?1717 
+NO.111 Which component of an approval process defines the chain of approval, determines which records can advance, and specifies where to assign approval requests?
 A. Process Definition Detail 
 B. Approval Steps 
 C. Entry Criteria 
 D. Approval Actions 
 Answer: B 
 Explanation: 
-The core logic of any approval process is contained within its Approval Steps18. While the overall process defines the "Entry Criteria" for which records can start the process, the individual Approval Steps are what define the actual "chain of approval"19191919. Each step can have its own specific criteria to determine if a record should enter that particular step or skip to the next one. Furthermore, the Approval Step is where the administrator specifies the Assigned Approver, whether it be a specific user, a manager, or a queue. This granularity allows for complex routing, such as sending small discounts to a manager but large discounts to a VP. Process Definition Detail (Option A) provides a high-level overview of the process settings. Entry Criteria (Option C) only act as the initial gatekeeper. Approval Actions (Option D) are the automated results (like email alerts or field updates) that happen once a step is decided. 
+The core logic of any approval process is contained within its Approval Steps18. While the overall process defines the "Entry Criteria" for which records can start the process, the individual Approval Steps are what define the actual "chain of approval". Each step can have its own specific criteria to determine if a record should enter that particular step or skip to the next one. Furthermore, the Approval Step is where the administrator specifies the Assigned Approver, whether it be a specific user, a manager, or a queue. This granularity allows for complex routing, such as sending small discounts to a manager but large discounts to a VP. Process Definition Detail (Option A) provides a high-level overview of the process settings. Entry Criteria (Option C) only act as the initial gatekeeper. Approval Actions (Option D) are the automated results (like email alerts or field updates) that happen once a step is decided. 
 NO.112 A Platform Administrator is creating a new action instruction for an agent. This action, named createCase, is designed to generate a new Salesforce Case record based on the user's conversation with the agent. Which set of Action Instructions should the administrator use for the createCase action, according to best practices for action instructions? 
 A. "This action provides the ability to create a new case record in the Salesforce system. Its function is to simply save customer information as a record. Use this when the user wants to create a case." 
-52
+
 
 B. "Use this action to create a new Salesforce Case record. The goal is to document a customer's issue in the system. Use this when the user's intent is to create a formal record of their problem or question." 
 C. "Creates a new case record in the system for any type of customer inquiry. The purpose of this is to ensure a record of the interaction is saved." 
 D. "The createCase code snippet is configured to create a case. It runs in the background to handle the user' s request to log a new issue. Its purpose is to solve the customer's issue." Answer: B 
 Explanation: 
-Best practices for Agentforce Action Instructions emphasize clarity, intent, and specific usage scenarios to help the LLM (Large Language Model) understand exactly when and why to trigger an action13. Option B is the best choice because it explicitly defines the Action (create a Case), the Goal (document a customer's issue), and the User Intent (formal record of a problem or question)14. High quality instructions act as a guide for the agent's reasoning process15. Vague instructions, like those in Option A or C, may lead to the agent triggering the action at inappropriate times, such as during a simple inquiry that doesn't require a formal case. 
-Instructions that focus on "code snippets" (Option D) are less effective because the LLM needs to understand the functional business context rather than the technical implementation details to interact naturally with the user17. 
+Best practices for Agentforce Action Instructions emphasize clarity, intent, and specific usage scenarios to help the LLM (Large Language Model) understand exactly when and why to trigger an action. Option B is the best choice because it explicitly defines the Action (create a Case), the Goal (document a customer's issue), and the User Intent (formal record of a problem or question). High quality instructions act as a guide for the agent's reasoning process. Vague instructions, like those in Option A or C, may lead to the agent triggering the action at inappropriate times, such as during a simple inquiry that doesn't require a formal case. 
+Instructions that focus on "code snippets" (Option D) are less effective because the LLM needs to understand the functional business context rather than the technical implementation details to interact naturally with the user. 
 NO.113 Once an opportunity reaches the negotiation stage at Cloud Kicks, the Amount field becomes required for sales users. Sales managers need to be able to move opportunities into this stage without knowing the amount. 
 How should a Platform Administrator require this field during the negotiation stage for sales users but allow their managers to make changes? 
 A. Make the field required for all users. 
@@ -1191,7 +1251,7 @@ Answer: C
 Explanation: 
 A Validation Rule is the only way to enforce conditional requirement logic based on both record data (the stage) and user data (the user's profile or role). To achieve this, the Platform Administrator would write a formula that checks three things: if the Stage is "Negotiation," if the Amount field is blank, and if the user is not a manager. The formula would look something like: AND(ISPICKVAL(StageName, "Negotiation"), ISBLANK(Amount), $Profile.Name <> "Sales Manager"). This allows the system to block standard sales users from saving the record without an amount, while the exception for the manager's profile allows them to bypass the requirement. Making the field required on the page layout (Option A) would affect all users equally, failing to meet the requirement for managers. Assigning the Admin profile to managers (Option B) is a major security risk and violates the principle of least privilege.1 
 NO.114 A Platform Administrator creates a custom text area field on the Account object and adds it to the service team's page layout. The service team manager loves the addition of this field and wants it to appear in the highlights panel so that the service reps can quickly find it when on the 
-53
+
 
 Account page. How should the administrator accomplish this? 
 A. In the Account object manager, create a custom compact layout. 
@@ -1208,8 +1268,8 @@ C. The first four items in the Mobile Only navigation menu appear both in the na
 D. The Mobile Only app automatically includes all standard Salesforce objects in the navigation menu based on user permissions. 
 Answer: C 
 Explanation: 
-The Mobile Only app is the default navigation experience in the Salesforce mobile app when no other Lightning apps have been assigned to a user for mobile use64. In this configuration, the navigation menu is controlled globally via the "Salesforce Navigation" setup page6565. A key behavior of this interface is that the first four items placed in the navigation list become the "persistent" icons that appear in the navigation bar at the bottom of the mobile screen for quick access66. These same items also appear at the top of the "Menu" tab67. Option A is incorrect because pages must have a corresponding Tab created before they can be added to the navigation menu68. Option B is incorrect because the "Mobile Only" navigation is a single global setting for the entire org; if you need different menus for different profiles, you must create and deploy specific Lightning Apps69. Option D is incorrect because standard objects do not appear automatically; the administrator must explicitly add them to the navigation list in Setup70. Understanding this behavior is essential for ensuring mobile users have a streamlined and intuitive interface 
-NO.116 Universal Containers wants to track all stakeholders involved in its sales opportunities to 54
+The Mobile Only app is the default navigation experience in the Salesforce mobile app when no other Lightning apps have been assigned to a user for mobile use. In this configuration, the navigation menu is controlled globally via the "Salesforce Navigation" setup page. A key behavior of this interface is that the first four items placed in the navigation list become the "persistent" icons that appear in the navigation bar at the bottom of the mobile screen for quick access. These same items also appear at the top of the "Menu" tab. Option A is incorrect because pages must have a corresponding Tab created before they can be added to the navigation menu. Option B is incorrect because the "Mobile Only" navigation is a single global setting for the entire org; if you need different menus for different profiles, you must create and deploy specific Lightning Apps. Option D is incorrect because standard objects do not appear automatically; the administrator must explicitly add them to the navigation list in Setup. Understanding this behavior is essential for ensuring mobile users have a streamlined and intuitive interface 
+NO.116 Universal Containers wants to track all stakeholders involved in its sales opportunities to 
 
 ensure proper relationship management. Sales reps need to identify who has decision-making authority, who influences the buying process, and who serves as the primary contact for each deal. Which feature should a Platform Administrator configure to meet this requirement? A. Configure opportunity team members to track internal and external stakeholders. B. Set up account teams to track stakeholders across multiple opportunities. C. Use standard fields on opportunities to track stakeholder information. 
 D. Use contact roles on opportunities to identify stakeholder involvement and influence. Answer: D 
@@ -1220,10 +1280,10 @@ NO.117 Cloud Kicks has implemented an Employee Agent to answer benefits question
 A. Configure assignment rules to assign the agent to employee data. 
 B. Ensure the users' permissions and field-level security restrict access to the CEO's health plan. C. Modify the agent's instructions and guardrails to block questions related to the CEO's health plan. D. Train the agent on employee health plans instead of the CEO's health plan. Answer: B 
 Explanation: 
-In the context of Agentforce AI, grounding and data security are paramount. Salesforce AI agents, including Employee Agents, respect the existing security model of the Salesforce organization1. This means that the most effective way to prevent an agent from accessing or disclosing sensitive information, such as a CEO's private health plan, is to leverage Field-Level Security (FLS) and user permissions2. When an agent 
-"grounds" its response, it only considers data that the running user (or the agent's service user) has the permission to view3. If the CEO's health records are stored in fields or records that are restricted via FLS or Sharing Settings from the profiles or permission sets used by the agent's context, the agent will simply not 
-"see" that data during its retrieval phase4. While modifying instructions and guardrails (Option C) provides an additional layer of safety, it is not as foolproof as the underlying security architecture5. Training the agent (Option D) is not a standard configuration step for preventing specific record access in a production environment6. Therefore, maintaining a robust security model is the critical prerequisite for ensuring that AI agents provide accurate and safe responses without leaking confidential business information. 
-NO.118 A salesperson complains that the Log a Call button is missing from the highlights panel of an 55
+In the context of Agentforce AI, grounding and data security are paramount. Salesforce AI agents, including Employee Agents, respect the existing security model of the Salesforce organization1. This means that the most effective way to prevent an agent from accessing or disclosing sensitive information, such as a CEO's private health plan, is to leverage Field-Level Security (FLS) and user permissions. When an agent 
+"grounds" its response, it only considers data that the running user (or the agent's service user) has the permission to view. If the CEO's health records are stored in fields or records that are restricted via FLS or Sharing Settings from the profiles or permission sets used by the agent's context, the agent will simply not 
+"see" that data during its retrieval phase. While modifying instructions and guardrails (Option C) provides an additional layer of safety, it is not as foolproof as the underlying security architecture. Training the agent (Option D) is not a standard configuration step for preventing specific record access in a production environment. Therefore, maintaining a robust security model is the critical prerequisite for ensuring that AI agents provide accurate and safe responses without leaking confidential business information. 
+NO.118 A salesperson complains that the Log a Call button is missing from the highlights panel of an 
 
 Opportunity page. What is the reason for this? 
 
@@ -1246,23 +1306,23 @@ NO.120 Cloud Kicks (CK) is partnering with a used shoe store and second-hand bic
 A. Scheduled flow 
 B. Record triggered flow 
 C. Autolaunched flow 
-56
+
 
 D. Automation event triggered flow Answer: A 
 Explanation: 
 
 
-For any business process that needs to run at a specific time interval (in this case, "once a week"), a Scheduled flow is the standard tool. A scheduled flow allows the Platform Administrator to define a frequency (Daily, Weekly, or Once) and a start time57. The flow can then query all relevant Account records and perform the logic of counting open cases and updating the parent record 
-autonomously58. Record-triggered flows (Option B) are inappropriate here because the count needs to happen on a schedule rather than being triggered by an individual record edit59. Autolaunched flows (Option C) must be called by another process, such as a button or Apex, and do not have their own timing mechanism60. "Automation event triggered flow" (Option D) is not a standard type of flow used for recurring batch processing 
-NO.121 DreamHouse Realty (DHR) wants a templated process with a mortgage calculator that generates leads for loans. DHR needs to complete the project within 30 days and has maxed out its budget for the year. Which AppExchange item should help a Platform Administrator meet the request?4 
-A. Bolt Solutions5 
-B. Lightning Community6 
-C. Lightning Data7 
-D. Flow Solutions8 
+For any business process that needs to run at a specific time interval (in this case, "once a week"), a Scheduled flow is the standard tool. A scheduled flow allows the Platform Administrator to define a frequency (Daily, Weekly, or Once) and a start time. The flow can then query all relevant Account records and perform the logic of counting open cases and updating the parent record 
+autonomously. Record-triggered flows (Option B) are inappropriate here because the count needs to happen on a schedule rather than being triggered by an individual record edit. Autolaunched flows (Option C) must be called by another process, such as a button or Apex, and do not have their own timing mechanism. "Automation event triggered flow" (Option D) is not a standard type of flow used for recurring batch processing 
+NO.121 DreamHouse Realty (DHR) wants a templated process with a mortgage calculator that generates leads for loans. DHR needs to complete the project within 30 days and has maxed out its budget for the year. Which AppExchange item should help a Platform Administrator meet the request?
+A. Bolt Solutions
+B. Lightning Community
+C. Lightning Data
+D. Flow Solutions
 Answer: D 
 Explanation: 
 10 
-When a business needs a specific11, complex functional tool (like a mortgage calculator) on a tight timeline and zero budget, Flow Solutions on the AppExchange are the best resource. Many Flow Solutions are provided for free by Salesforce Labs or other partners. These are pre-built, "installable" flows that an administrator can download and customize. Because they are built using standard Flow Builder logic, they can be easily integrated into a website or Experience Cloud site to capture user input and generate Lead records automatically. Bolt Solutions (Option A) are full industry templates that often require more setup and licensing. Lightning Data (Option C) is for data enrichment, not functional calculators. Flow Solutions empower administrators to deliver complex automation and specialized UI components quickly and cost- effectively. 
+When a business needs a specific, complex functional tool (like a mortgage calculator) on a tight timeline and zero budget, Flow Solutions on the AppExchange are the best resource. Many Flow Solutions are provided for free by Salesforce Labs or other partners. These are pre-built, "installable" flows that an administrator can download and customize. Because they are built using standard Flow Builder logic, they can be easily integrated into a website or Experience Cloud site to capture user input and generate Lead records automatically. Bolt Solutions (Option A) are full industry templates that often require more setup and licensing. Lightning Data (Option C) is for data enrichment, not functional calculators. Flow Solutions empower administrators to deliver complex automation and specialized UI components quickly and cost- effectively. 
 NO.122 A Platform Administrator at Cloud Kicks needs to export a file of closed won opportunities from the last 90 days. The file should include the Opportunity Name, ID, Close Date, and Amount. What should the administrator use to export this file? 
 A. Data Loader 
 B. Data Import Wizard 
@@ -1271,9 +1331,9 @@ D. Data Export Service
 Answer: A 
 Explanation: 
 When an administrator needs to extract a specific subset of records (e.g., Opportunities filtered by stage and date) with specific fields, the Data Loader is the most appropriate tool. Data Loader is a 
-57
 
-client application that allows for bulk operations, including "Export" and "Export All"43. It allows the administrator to write a SOQL (Salesforce Object Query Language) query or use the built-in query builder to apply filters, such as StageName = 'Closed Won' and CloseDate = LAST_90_DAYS44. The Data Import Wizard (Option B) is primarily used for importing data and has very limited export capabilities, usually confined to simple CSV samples45454545. The Data Export Service (Option D), also known as "Weekly Export," is designed for full backup purposes; it exports the entire database into zip files and does not allow for specific filtering of records or fields for a quick ad-hoc report. Data Cloud (Option C) is a large-scale data platform and is overkill for a simple file export task47. Thus, for targeted, field-specific exports of 90 days of data, Data Loader is the standard choice. 
+
+client application that allows for bulk operations, including "Export" and "Export All". It allows the administrator to write a SOQL (Salesforce Object Query Language) query or use the built-in query builder to apply filters, such as StageName = 'Closed Won' and CloseDate = LAST_90_DAYS. The Data Import Wizard (Option B) is primarily used for importing data and has very limited export capabilities, usually confined to simple CSV samples. The Data Export Service (Option D), also known as "Weekly Export," is designed for full backup purposes; it exports the entire database into zip files and does not allow for specific filtering of records or fields for a quick ad-hoc report. Data Cloud (Option C) is a large-scale data platform and is overkill for a simple file export task. Thus, for targeted, field-specific exports of 90 days of data, Data Loader is the standard choice. 
 NO.123 Agentforce is escalating cases to the support team, but the support team complains they have no context and have to ask the customer to repeat everything. Which configuration issue is the most likely cause of this issue? 
 A. The support team members are missing the Agentforce User permission set. B. The support team's case page layout is missing the agent history component. C. The agent's instructions are preventing the history and context from being saved. D. The handoff is creating a new case instead of transferring the existing session. Answer: B 
 Explanation: 
@@ -1284,33 +1344,32 @@ A. Set up opportunity reports with chart components and stage-based grouping. B.
 Answer: C 
 Explanation: 
 The Kanban view provides a visual representation of a set of records, such as an opportunity pipeline, organized by a specific field like "Stage". It allows sales teams to see all their deals as cards in columns. The primary benefit of Kanban is its "drag-and-drop" functionality, which lets users move a 
-58
+
 
 card from one column to another to automatically update the stage, effectively "moving opportunities forward" with minimal effort. 
-While reports (Option A) and dashboards (Option B) provide visual summaries, they do not allow for the interactive, one-click record updates that the Kanban view offers11. Standard list views (Option D) show data in a grid format which is less visual for tracking pipeline progress compared to the column-based Kanban layout. 
-NO.125 When Agentforce performs its grounding check, it examines source information, the topic instructions, and scope. Which additional information does the agent look for during its grounding check?39 
+While reports (Option A) and dashboards (Option B) provide visual summaries, they do not allow for the interactive, one-click record updates that the Kanban view offers. Standard list views (Option D) show data in a grid format which is less visual for tracking pipeline progress compared to the column-based Kanban layout. 
+NO.125 When Agentforce performs its grounding check, it examines source information, the topic instructions, and scope. Which additional information does the agent look for during its grounding check?
 A. Incompatible data types 
 B. Prompt injection risks 
 C. Encrypted fields 
 D. The web for information verification 
 Answer: B 
 Explanation: 
-Groundingis the process by which an AI agent retrieves and uses specific, trusted data to ensure its responses are accurate and relevant41. During this process, Salesforce'sEinstein Trust Layerperforms several critical checks, including identifyingPrompt Injection risks424242. Prompt injection refers to attempts by a user to 
-"trick" the AI into ignoring its instructions or revealing sensitive data by entering malicious commands into the chat interface43. By checking for these risks during the grounding phase, the agent can ensure that the instructions it uses to generate a response remain secure and aligned with company policies44. While the agent respects field security, "Encrypted fields" (Option C) are handled at the data access layer rather than as part of the linguistic grounding check45. Standard Agentforce agents do not browse the open web for verification (Option D) as they are intended to remain grounded strictly in the company's verified internal data46. 
+Groundingis the process by which an AI agent retrieves and uses specific, trusted data to ensure its responses are accurate and relevant. During this process, Salesforce'sEinstein Trust Layerperforms several critical checks, including identifyingPrompt Injection risks. Prompt injection refers to attempts by a user to 
+"trick" the AI into ignoring its instructions or revealing sensitive data by entering malicious commands into the chat interface. By checking for these risks during the grounding phase, the agent can ensure that the instructions it uses to generate a response remain secure and aligned with company policies. While the agent respects field security, "Encrypted fields" (Option C) are handled at the data access layer rather than as part of the linguistic grounding check. Standard Agentforce agents do not browse the open web for verification (Option D) as they are intended to remain grounded strictly in the company's verified internal data. 
 NO.126 What are three characteristics of a master-detail relationship? 
 A. Each object can have up to five master-detail relationships. 
 B. Permissions for the detail record are set independently of the master. 
 C. Roll-up summaries are supported in master-detail relationships. 
-D. The master object can be a standard or custom object.1 
-E. The owner field on the detail records is the owner of the master record.2 
+D. The master object can be a standard or custom object.
+E. The owner field on the detail records is the owner of the master record.
 Answer: C D E 
 Explanation: 
-4 
-A Master-Detail Relationship has several defining traits:5 
+
+A Master-Detail Relationship has several defining traits:
 * Roll-up Summaries:This relationship is the only one that allows the Master record to summarize data (sum, count, min, max) from its Detail records (Option C). 
 * Object Types:The Master can be either a standard object (like Account) or a custom object (Option D). 
 * Ownership and Security: The Detail record inherits its owner from the Master record, and as such, there is no "Owner" field on the Detail record (Option E). Additionally, the detail record's security and sharing settings are inherited from the master, meaning permissions are not independent (negating 
-59
 
 Option B). 
 Option A is incorrect because an object can only have a maximum of two master-detail relationships. 
@@ -1320,11 +1379,11 @@ C. Reopen the Case.
 D. Reassign the Case. 
 Answer: A D 
 Explanation: 
-Case Escalation Rulesare used in Service Cloud to ensure that cases are handled within specific timeframes, helping organizations meet their Service Level Agreements (SLAs)23232323232323. When a case meets the criteria defined in an escalation rule and remains unresolved for a specified period, the system can perform two primary automated actions: 
+Case Escalation Rulesare used in Service Cloud to ensure that cases are handled within specific timeframes, helping organizations meet their Service Level Agreements (SLAs). When a case meets the criteria defined in an escalation rule and remains unresolved for a specified period, the system can perform two primary automated actions: 
 * Reassign the Case:The rule can automatically transfer ownership of the case to another user or a specific queue (e.g., a "Tier 2 Support" queue) to ensure it gets specialized 
-attention242424242424242424. 
+attention. 
 * Send Email Notifications: The system can send alerts to the new owner, the current owner, or up to five additional email addresses to notify management that a case has escalated. While administrators often use other tools like Flow Builder to change the "Case Priority" (Option B) or 
-"Reopen" a case (Option C), these are not standard features within the Escalation Rule interface26. Escalation rules focus specifically on the routing and notification aspects of case management to prevent tickets from 
+"Reopen" a case (Option C), these are not standard features within the Escalation Rule interface. Escalation rules focus specifically on the routing and notification aspects of case management to prevent tickets from 
 "sitting" too long without a response. 
 NO.128 A sales rep has left the company, and a Platform Administrator has been asked to re-assign all their accounts and opportunities to a new sales rep and keep the team as is. Which tool should the administrator use to accomplish this? 
 A. Data Loader 
@@ -1334,7 +1393,7 @@ D. Data Import Wizard
 Answer: C 
 Explanation: 
 The Mass Transfer Records tool is a built-in Salesforce feature designed specifically for the scenario of a person leaving the company or changing roles. It allows a Platform Administrator to select a "From" user and a "To" user and then choose specific record types to transfer, such as Accounts and Opportunities. A major advantage of this tool is that it gives the administrator the option to transfer related records (like open opportunities or cases) and keep existing teams (like Account Teams) intact during the move. While Data Loader (Option A) or Dataloader.io (Option B) could technically perform a bulk update of the "OwnerId" field, they require several steps, including exporting data, manipulating CSV files, and re-uploading. The Data Import Wizard (Option D) is primarily for creating or updating records from an external file and does not have a dedicated "transfer" function. Mass Transfer is the fastest and safest standard way to reassign ownership within the Setup menu. 
-60
+
 
 NO.129 Cloud Kicks wants to leverage roll-up summaries on the Account object. Which standard object supports this roll-up summary natively? 
 A. Opportunity 
@@ -1343,7 +1402,7 @@ C. Case
 D. Campaigns 
 Answer: A 
 Explanation: 
-A Roll-up Summary Field is a powerful feature that calculates values from related records and displays them on a master record. However, this functionality is natively available only on the "Master" side of a Master- Detail relationship. For standard objects, Salesforce provides a built-in Master-Detail-like relationship between Accounts and Opportunities. Specifically, the Account object acts as the master, and the Opportunity object acts as the detail. This relationship allows a Platform Administrator to create roll-up summary fields on the Account to calculate the sum of "Total Opportunity Amount," the "Minimum Close Date," or a "Count" of all related opportunities. Other standard objects like Contacts (Option B) and Cases (Option C) have a lookup relationship to Accounts rather than a master-detail relationship, and therefore do not support native roll-up summaries20. Campaigns (Option D) also do not share this specific relationship with Accounts21. If an administrator needs to roll up data from these other objects, they would typically need to use a custom solution like Flow Builder or a third-party app, whereas Opportunities are supported natively out of the box. 
+A Roll-up Summary Field is a powerful feature that calculates values from related records and displays them on a master record. However, this functionality is natively available only on the "Master" side of a Master- Detail relationship. For standard objects, Salesforce provides a built-in Master-Detail-like relationship between Accounts and Opportunities. Specifically, the Account object acts as the master, and the Opportunity object acts as the detail. This relationship allows a Platform Administrator to create roll-up summary fields on the Account to calculate the sum of "Total Opportunity Amount," the "Minimum Close Date," or a "Count" of all related opportunities. Other standard objects like Contacts (Option B) and Cases (Option C) have a lookup relationship to Accounts rather than a master-detail relationship, and therefore do not support native roll-up summaries. Campaigns (Option D) also do not share this specific relationship with Accounts. If an administrator needs to roll up data from these other objects, they would typically need to use a custom solution like Flow Builder or a third-party app, whereas Opportunities are supported natively out of the box. 
 NO.130 Marketing users at Cloud Kicks have been completing the Lead Source field inconsistently, with values like Web, Website, and Online. To ensure data quality, a Platform Administrator needs to standardize these records. Which Flow should the administrator use to clean up these inconsistent Lead Source values? 
 A. Segment triggered flow 
 B. Record triggered flow 
@@ -1352,9 +1411,9 @@ D. Screen flow
 Answer: C 
 Explanation: 
 When an administrator needs to perform a "cleanup" of existing data in bulk, a Schedule-triggered flow is the most efficient choice. This type of flow can be configured to run once (or on a recurring schedule) and process all Lead records that meet the "inconsistent" criteria (e.g., Lead Source equals 'Website' or 'Online') 
-46. The flow can then automatically update those records to the standard "Web" value. A Record triggered flow (Option B) only works on records as they are being created or updated, so it would not fix historical data unless every record was manually touched Screen flows (Option D) require manual user interaction for each record. 53Segment-triggered flows (Option A) are used in Data Cloud marketing conte54xts rather than standard core record cleanup. 
+. The flow can then automatically update those records to the standard "Web" value. A Record triggered flow (Option B) only works on records as they are being created or updated, so it would not fix historical data unless every record was manually touched Screen flows (Option D) require manual user interaction for each record. Segment-triggered flows (Option A) are used in Data Cloud marketing contexts rather than standard core record cleanup. 
 NO.131 Universal Containers wants to ensure that cases are routed to the right people at the right time, but there is a growing support organization. The business wants to be able to move people around and adjust the work they get without having to request extra assistance or rely on the 
-61
+
 
 administrator teams. Which tool allows the business to control its own assignment of work? A. Case Assignment Rules 
 B. Email-to-Case 
@@ -1371,11 +1430,10 @@ D. List Views
 Answer: B 
 Explanation: 
 The Opportunity Sales Path (or simply Path) is a visual representation of the stages in a sales process. It is the best tool for this requirement because it not only shows the current stage prominently at the top of the record but also allows administrators to define Key Fields and Guidance for Success for every stage. This guidance can include specific steps, tips, and links to company resources that explain exactly what a rep needs to do to move the deal to the next phase. Reports (Option A), List Views (Option D), and Big Deal Alerts (Option C) provide data and notifications but do not offer the contextual, stage-by-stage guidance that the Path provides. 
-NO.133 Cloud Kicks wants to make sure clients are getting the attention they need and cases are not sitting longer than the Service Level Agreement (SLA) it has with its clients. Which standard feature helps route cases to a Tier 2 team if they have not been addressed in a specific amount of time?11 A. Milestone and Entitlements 
+NO.133 Cloud Kicks wants to make sure clients are getting the attention they need and cases are not sitting longer than the Service Level Agreement (SLA) it has with its clients. Which standard feature helps route cases to a Tier 2 team if they have not been addressed in a specific amount of time? A. Milestone and Entitlements 
 B. Omni Channel Routing 
 C. Auto Response Rules 
 D. Escalation Rules 
-62
 
 Answer: D 
 Explanation: 
@@ -1395,7 +1453,7 @@ B. Make a new Sales dashboard and add a component that shows all opportunities t
 C. Enable Sales Console and show users how to open a tab for each opportunity in the pipeline that meets the requirements. 
 D. Create a list view on the Opportunity object and recommend users switch the view to Kanban to edit by drag and drop. 
 Answer: D 
-63
+
 
 Explanation: 
 To provide both a "quick view" and a way to "update" records efficiently, a List View combined with the Kanban view is the most effective solution. The Platform Administrator can create a public list view with the filter "Close Date equals NEXT 90 DAYS." By switching this list view to the Kanban display, sales reps can see their deals organized by stage. The Kanban view allows for rapid updates via drag-and-drop, which automatically changes the Stage field, and provides side-panel editing for other key fields. While reports (Option A) and dashboards (Option B) are good for visualization, they are not optimized for the rapid, bulk record updates the manager is requesting. The Kanban view is a native productivity feature designed specifically to streamline pipeline management for sales users. 
@@ -1416,7 +1474,7 @@ D. Configure the package from Salesforce Setup.
 Answer: A 
 Explanation: 
 Salesforce does not provide a robust, native "document merge" engine that can handle complex templates, headers, and advanced formatting out of the box. Therefore, the standard practice for implementing such a solution is to download a third-party application from the AppExchange. The AppExchange is the primary marketplace for Salesforce-integrated solutions, offering popular document generation tools like Conga Composer, Nintex DocGen, or S-Docs. These tools allow administrators to create professional-grade documents (like quotes, contracts, and invoices) by 
-64
+
 
 merging Salesforce record data into Word, PDF, or Excel templates. As a Platform Administrator, the process involves researching the best-fit app for the requirements, installing the package into a Sandbox for testing, and then deploying it to Production. This approach is highly efficient because it leverages existing, vetted technology that is specifically designed to handle the complexities of document generation, saving the organization from trying to build a costly and difficult-to- maintain custom solution using code or complex automation. 
 NO.138 Ursa Major Solar classifies its accounts as Silver, Gold, or Platinum Level. When a new case is created for a Silver or Gold partner, it should go to the Regular Support Queue. When an account is Platinum Level, it should automatically go to the Priority Support Queue. What should a Platform Administrator use to achieve this? 
@@ -1427,16 +1485,16 @@ D. Workflow Rules
 Answer: B 
 Explanation: 
 Case Assignment Rules are the standard Salesforce tool for automatically routing cases to specific users or queues based on record criteria. A single assignment rule can contain multiple "Rule Entries" processed in a specific order. To meet this requirement, the Platform Administrator would create a rule with two entries: one that checks if the Account's "Level" field equals "Platinum" and routes it to the Priority Support Queue, and another that checks if the level is "Silver" or "Gold" and routes it to the Regular Support Queue. This automation happens the moment the case is created, ensuring that high-value customers receive immediate attention from the appropriate team. Escalation Rules (Option A) are used to move a case after it has been sitting for a period of time, not for initial routing. Workflow Rules (Option D) are a legacy tool that cannot natively assign cases to queues in the same direct manner as Assignment Rules. 
-NO.139 A Platform Administrator is adding a new topic to an agent. What is best practice for topic instructions?70 
+NO.139 A Platform Administrator is adding a new topic to an agent. What is best practice for topic instructions?
 A. Write the instructions generically to allow the agent maximum flexibility in its reasoning. B. Include an extended list of example user questions so the agent can learn from patterns. C. Keep instructions as minimal as possible to reduce agent latency. 
 D. Add business-specific language rather than plain language. 
 Answer: B 
 Explanation: 
-When defining Topics for an Agentforce agent, the quality of instructions is vital for ensuring the agent identifies the correct topic when a user asks a question. Best practice includes providing a variety of example user questions (utterances). This helps the agent's natural language processing (NLP) model recognize the different patterns and ways a human might phrase a request related to that specific topic. Writing instructions too generically (Option A) can lead to "topic overlap," where the agent gets confused about which topic to use75. Minimal instructions (Option C) may reduce latency slightly but often result in poor accuracy and failed topic identification76. Using "plain language" is generally preferred over overly "business-specific" jargon (Option D) because the agent needs to match the way customers or employees naturally speak during a conversation I apologize 
-65
+When defining Topics for an Agentforce agent, the quality of instructions is vital for ensuring the agent identifies the correct topic when a user asks a question. Best practice includes providing a variety of example user questions (utterances). This helps the agent's natural language processing (NLP) model recognize the different patterns and ways a human might phrase a request related to that specific topic. Writing instructions too generically (Option A) can lead to "topic overlap," where the agent gets confused about which topic to use. Minimal instructions (Option C) may reduce latency slightly but often result in poor accuracy and failed topic identification. Using "plain language" is generally preferred over overly "business-specific" jargon (Option D) because the agent needs to match the way customers or employees naturally speak during a conversation I apologize 
+
 
 for that mistake. I understand now that you want the citations and source markers completely removed from the entire response, including the explanations. I will ensure they are not included moving forward. 
-NO.140 Cloud Kicks has the organization wide defaults for Opportunity set to Private. Which two features should a Platform Administrator use to open up access to opportunity records for sales users working on collaborative deals?63 
+NO.140 Cloud Kicks has the organization wide defaults for Opportunity set to Private. Which two features should a Platform Administrator use to open up access to opportunity records for sales users working on collaborative deals?
 A. Sharing rules 
 B. Sharing set 
 C. Role hierarchy 
@@ -1454,8 +1512,8 @@ D. Omni-Channel
 Answer: C 
 Explanation: 
 To transition users from a standard "tab-based" application to a Lightning Console app, the Platform Administrator must use the App Manager in Setup. The App Manager is where all Lightning apps are created, edited, and assigned to user profiles. Within the App Manager, the admin can create a new app and select 
-"Console Navigation" as the navigation style39. Console apps allow users to work on multiple records simultaneously in a workspace tab-based layout, which is highly effective for productivity in fast paced environments like sales or support40. The Lightning App Builder (Option A) is used to design the pages within the app, but the app's overall structure and navigation style are defined in the App Manager41. Screen Flow (Option B) and Omni-Channel (Option D) are specialized tools that can be used within a console but do not create the console app itself. 
-NO.142 A new agent is being developed to help customer service reps process customer requests 66
+"Console Navigation" as the navigation style. Console apps allow users to work on multiple records simultaneously in a workspace tab-based layout, which is highly effective for productivity in fast paced environments like sales or support. The Lightning App Builder (Option A) is used to design the pages within the app, but the app's overall structure and navigation style are defined in the App Manager. Screen Flow (Option B) and Omni-Channel (Option D) are specialized tools that can be used within a console but do not create the console app itself. 
+NO.142 A new agent is being developed to help customer service reps process customer requests 
 
 for a replacement product. The agent needs to call an action that takes two inputs: * productId: An 18 character ID for the product being replaced 
 * reasonCode: A three-digit code representing the reason for the replacement Which set of agent instructions should a Platform Administrator use for these inputs, according to best practices for Agentforce instructions? 
@@ -1472,7 +1530,7 @@ B. Configure Campaign Member Statuses to record which event Members attended. C.
 Answer: C 
 Explanation: 
 To organize related marketing initiatives and simplify reporting, Salesforce utilizes Campaign Hierarchies. A hierarchy allows an administrator to link multiple campaigns together using the "Parent Campaign" field. In this scenario, the admin should create a "Parent" campaign to represent the entire networking series and then create individual "Child" campaigns for each monthly event. This structure provides two major benefits: it allows the sales rep to see the specific performance (ROI, members, responses) of a single monthly event, and it uses "Hierarchy Total" fields to automatically roll up all those metrics to the parent level. This provides a holistic view of the entire series' success without requiring complex manual calculations. Using the same name for campaigns 
-67
+
 
 (Option A) leads to data confusion, and while member statuses (Option B) are useful, they do not provide the structural "series vs. month" reporting required here. Campaign Hierarchy is the standard architectural approach for multi-touch or recurring marketing efforts. 
 NO.144 The VP of sales at AW Computing would like sales reps to check in with their top account every Monday. 
@@ -1491,7 +1549,7 @@ Answer: A
 Explanation: 
 Flow Builder is the standard and most versatile tool for performing automated data maintenance, including the deletion of records. A "Schedule-Triggered Flow" can be configured to run at specific intervals (e.g., daily at midnight) to find records that meet certain criteria-such as Leads that have 
 been "Unqualified" for over a year-and use the "Delete Records" element to remove them from the system. While the "Mass Delete Records" tool (Option C) exists in the Setup menu, it is a manual administrative tool and cannot be scheduled or fully automated based on complex field-level logic. Automation Studio (Option B) is a Marketing Cloud tool, not a core Salesforce platform feature for record management. Flow Orchestration (Option D) is used for complex, multi-user business processes rather than simple data cleanup tasks. Therefore, for recurring, criteria- based record deletion, Flow Builder is the recommended solution. 
-NO.146 A VP of sales needs to report on records owned by individuals in various parts of the role 68
+NO.146 A VP of sales needs to report on records owned by individuals in various parts of the role 
 
 hierarchy. The organization-wide default is set to Private. What should a Platform Administrator configure to achieve this? 
 A. Field-Level Security 
@@ -1507,12 +1565,12 @@ C. Multi-factor Authentication
 D. Permission Set 
 Answer: B 
 Explanation: 
-In Salesforce, Trusted IP Ranges (configured under Network Access in Setup) define a set of IP addresses from which users can log in without being prompted for a verification code (identity confirmation). In a call center environment where reps use different machines but are all within the same corporate network (sharing a common external IP or range), adding those corporate IPs to the Trusted IP Ranges list "streamlines" the login process. This prevents the system from seeing each new machine as an "unrecognized device". Multi- factor Authentication (Option C) actually adds an extra step to the login process, which is the opposite of streamlining28. Profiles (Option A) and Permission Sets (Option D) can manage "Login IP Ranges" (which restrict access to specific IPs), but Trusted IP Ranges are the primary tool for bypassing identity verification within a known network. 
+In Salesforce, Trusted IP Ranges (configured under Network Access in Setup) define a set of IP addresses from which users can log in without being prompted for a verification code (identity confirmation). In a call center environment where reps use different machines but are all within the same corporate network (sharing a common external IP or range), adding those corporate IPs to the Trusted IP Ranges list "streamlines" the login process. This prevents the system from seeing each new machine as an "unrecognized device". Multi- factor Authentication (Option C) actually adds an extra step to the login process, which is the opposite of streamlining. Profiles (Option A) and Permission Sets (Option D) can manage "Login IP Ranges" (which restrict access to specific IPs), but Trusted IP Ranges are the primary tool for bypassing identity verification within a known network. 
 NO.148 Cloud Kicks needs to be able to show different picklist values for sales and marketing users. Which two options meet this requirement? 
 A. Two permission sets, one record type, one picklist 
 B. One record type, two profiles, one picklist 
 C. One page layout, two record types, one picklist 
-69
+
 
 D. Two page layouts, one record type, two picklists Answer: C D 
 Explanation: 
@@ -1526,16 +1584,14 @@ C. Use an AppExchange product to troubleshoot.
 D. Ask the user for their password so the admin can log in as the user. 
 Answer: B 
 Explanation: 
-When a specific user encounters an error that an administrator cannot replicate, the most effective troubleshooting technique is to "Login as" that user. This feature, which must be enabled in the organization's login policies, allows the administrator to see exactly what the user sees and experience the system through their specific profile, role, and sharing permissions22. This is vital for identifying issues related to Validation Rules, Field-Level Security, or Record-Triggered Flows that might only trigger under specific user contexts. 
-Logging in as a system administrator (Option A) is ineffective because administrators often bypass certain restrictions that apply to standard users4. Asking for a password (Option D) is a major security violation and is never required in Salesforce5. By using the "Login as" feature, the admin can pinpoint whether the error is caused by the user's data input or a specific permission conflict assigned to their profile. 
+When a specific user encounters an error that an administrator cannot replicate, the most effective troubleshooting technique is to "Login as" that user. This feature, which must be enabled in the organization's login policies, allows the administrator to see exactly what the user sees and experience the system through their specific profile, role, and sharing permissions. This is vital for identifying issues related to Validation Rules, Field-Level Security, or Record-Triggered Flows that might only trigger under specific user contexts. 
+Logging in as a system administrator (Option A) is ineffective because administrators often bypass certain restrictions that apply to standard users. Asking for a password (Option D) is a major security violation and is never required in Salesforce. By using the "Login as" feature, the admin can pinpoint whether the error is caused by the user's data input or a specific permission conflict assigned to their profile. 
 NO.150 In an approval process, what happens when a queue is selected as the approver? A. The queue requires unanimous approval from all of its members before the record is approved. B. Any member of the queue can approve or reject the record and the queue is treated as a single entity. 
 C. Only the queue owner is notified about the approval request, not its members. D. The queue can only be used for objects that do not support individual user approvals. Answer: B 
 Explanation: 
-Salesforce allows Queues to be designated as assigned approvers in an approval process. When a 70
+Salesforce allows Queues to be designated as assigned approvers in an approval process. When a 
 
 record is submitted for approval and routed to a queue, an email notification is sent to all queue members (depending on queue settings). The core behavior is that any member of the queue can "claim" the request and either approve or reject it. Once one member takes action, the step is considered complete, and the queue is treated as a single decision-making entity. Unanimous approval (Option A) is a specific setting for multiple individual assigned approvers, but it does not apply to queues in this way. Option C is incorrect because the purpose of a queue is to notify all members to ensure a timely response. Queues are supported for most standard and all custom objects (negating Option D). 
-
-71
 
 
 <!-- PASTE YOUR NO.4 TO NO.150 QUESTIONS HERE -->
@@ -1546,25 +1602,42 @@ record is submitted for approval and routed to a queue, an email notification is
 <div class="container">
   <!-- START SCREEN -->
   <div id="start-screen">
-    <h1>Salesforce ADM-201 Quiz</h1>
+    <h1>Salesforce ADM-201 Simulator</h1>
    
     <div class="status-badge" id="detected-count">Loading questions...</div>
    
-    <div class="form-group">
-      <label for="quiz-mode">Select Quiz Format:</label>
-      <select id="quiz-mode">
-        <option value="60">Practice Exam (Random 60 Questions)</option>
-        <option value="10">Quick Review (Random 10 Questions)</option>
-        <option value="all">Full Bank (All Embedded Questions)</option>
-      </select>
+    <div class="timer-toggle">
+      <input type="checkbox" id="use-timer" style="transform: scale(1.3);">
+      <label for="use-timer" style="margin:0; cursor:pointer;">Enable Exam Timer (Simulates real exam pressure)</label>
     </div>
-   
-    <button onclick="startQuiz()">Start Quiz</button>
+
+    <div class="mode-grid">
+      <button class="mode-btn" onclick="startQuiz(10)">
+        Quick Review
+        <span>10 Random Questions</span>
+      </button>
+      <button class="mode-btn" onclick="startQuiz(60)">
+        Mock Exam
+        <span>60 Random Questions</span>
+      </button>
+      <button class="mode-btn" onclick="startQuiz('all')">
+        Full Bank
+        <span>All Available Questions</span>
+      </button>
+    </div>
   </div>
 
   <!-- QUIZ SCREEN -->
   <div id="quiz-screen" style="display: none;">
-    <div class="progress-text" id="progress-text">Question 1 of X</div>
+    <div class="quiz-header">
+      <div id="progress-text">Question 1 of X</div>
+      <div id="timer-display" class="timer-display">⏱ 00:00</div>
+    </div>
+   
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
     <div class="question-text" id="question-text">Question goes here...</div>
     <div class="instruction" id="instruction-text">Select one answer.</div>
    
@@ -1574,27 +1647,44 @@ record is submitted for approval and routed to a queue, an email notification is
    
     <div id="explanation-box" class="explanation-box"></div>
    
-    <button id="submit-btn" onclick="checkAnswer()">Check Answer</button>
-    <button id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
-    <button id="finish-btn" onclick="endQuiz()" style="display: none;" class="btn-secondary">End Quiz Now</button>
+    <button class="btn-primary" id="submit-btn" onclick="checkAnswer()">Check Answer</button>
+    <button class="btn-primary" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+    <button class="btn-danger" id="abort-btn" onclick="abortQuiz()" style="margin-top: 15px;">Quit & End Quiz Early</button>
   </div>
 
   <!-- SCORE SCREEN -->
   <div id="score-screen" style="display: none;">
-    <h1>Quiz Completed!</h1>
+    <h1>Quiz Results</h1>
+   
+    <div id="pass-status" class="pass-status"></div>
     <div class="score-circle" id="final-score">0%</div>
-    <p id="score-details" style="font-size:18px; margin-bottom:30px;">You answered 0 out of 0 questions correctly.</p>
-    <button onclick="restartMenu()">Return to Menu</button>
+    <p id="score-details" style="font-size:18px; margin-bottom:20px; color:#555;">You answered 0 out of 0 questions correctly.</p>
+   
+    <!-- Review Incorrect Section -->
+    <div id="review-section" class="review-list" style="display: none;">
+      <h3>Questions to Review:</h3>
+      <div id="review-items-container"></div>
+    </div>
+
+    <button class="btn-primary" id="retake-incorrect-btn" onclick="retakeIncorrect()" style="display:none;">
+      🔄 Retake Incorrect Questions
+    </button>
+    <button class="btn-secondary" onclick="restartMenu()">Return to Main Menu</button>
   </div>
 </div>
 
 <script>
   let allQuestions = [];
   let currentQuestions = [];
+  let incorrectQuestions = []; // Tracks questions gotten wrong in the current run
   let currentIndex = 0;
   let score = 0;
+ 
+  // Timer variables
+  let timerInterval;
+  let timeRemaining = 0;
 
-  // On page load, read the embedded text block and parse it!
+  // On page load, read the embedded text block and parse it
   window.onload = function() {
     const rawText = document.getElementById('embedded-quiz-data').innerHTML;
     allQuestions = parseQuizText(rawText);
@@ -1603,7 +1693,6 @@ record is submitted for approval and routed to a queue, an email notification is
 
   function parseQuizText(text) {
     const questions = [];
-   
     let cleanText = text.replace(/IT Certification Guaranteed, The Easy Way!/g, '');
     cleanText = cleanText.replace(/Exam\s*:\s*ADM-201.*?Version\s*:\s*V22\.35/s, '');
     cleanText = cleanText.replace(/^\s*\d+\s*$/gm, '');
@@ -1633,10 +1722,7 @@ record is submitted for approval and routed to a queue, an email notification is
          
           let match;
           while ((match = optionRegex.exec(optionsSection)) !== null) {
-            options.push({
-              letter: match[1],
-              text: match[2].trim()
-            });
+            options.push({ letter: match[1], text: match[2].trim() });
           }
         }
        
@@ -1665,36 +1751,80 @@ record is submitted for approval and routed to a queue, an email notification is
     }
   }
 
-  function startQuiz() {
+  function startQuiz(mode) {
     if (allQuestions.length === 0) {
-      alert("No questions found! Make sure you pasted your text into the <script id='embedded-quiz-data'> block inside the HTML code.");
+      alert("No questions found! Please paste your text into the HTML script block.");
       return;
     }
    
-    const mode = document.getElementById('quiz-mode').value;
     let pool = [...allQuestions];
    
     if (mode !== 'all') {
       const limit = parseInt(mode);
       shuffleArray(pool);
-      // Ensure we don't request more questions than exist in the array
       currentQuestions = pool.slice(0, Math.min(limit, pool.length));
     } else {
       currentQuestions = pool;
     }
    
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('quiz-screen').style.display = 'block';
-   
+    beginRun();
+  }
+
+  function retakeIncorrect() {
+    // Set the current questions strictly to the ones they just got wrong
+    currentQuestions = [...incorrectQuestions];
+    beginRun();
+  }
+
+  function beginRun() {
+    incorrectQuestions = []; // Reset incorrect tracker for this new run
     currentIndex = 0;
     score = 0;
+
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('score-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'block';
+   
+    // Timer Logic
+    clearInterval(timerInterval);
+    const useTimer = document.getElementById('use-timer').checked;
+    const timerDisplay = document.getElementById('timer-display');
+   
+    if (useTimer) {
+      // Give approx 1.75 minutes per question (standard salesforce timing)
+      timeRemaining = Math.floor(currentQuestions.length * 105);
+      timerDisplay.style.display = 'block';
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          alert("Time is up!");
+          endQuiz();
+        }
+      }, 1000);
+    } else {
+      timerDisplay.style.display = 'none';
+    }
+
     renderQuestion();
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+    const s = (timeRemaining % 60).toString().padStart(2, '0');
+    document.getElementById('timer-display').innerText = `⏱ ${m}:${s}`;
   }
 
   function renderQuestion() {
     const q = currentQuestions[currentIndex];
     const container = document.getElementById('options-container');
    
+    // Update Progress Bar
+    const progressPercent = ((currentIndex) / currentQuestions.length) * 100;
+    document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
     document.getElementById('progress-text').innerText = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
     document.getElementById('question-text').innerText = q.question;
     document.getElementById('instruction-text').innerText = q.type === 'multiple' ? 'Select all that apply.' : 'Select one answer.';
@@ -1716,7 +1846,7 @@ record is submitted for approval and routed to a queue, an email notification is
     document.getElementById('explanation-box').style.display = 'none';
     document.getElementById('submit-btn').style.display = 'block';
     document.getElementById('next-btn').style.display = 'none';
-    document.getElementById('finish-btn').style.display = 'block';
+    document.getElementById('abort-btn').style.display = 'block';
    
     const inputs = document.querySelectorAll('input[name="q-option"]');
     inputs.forEach(input => {
@@ -1725,7 +1855,7 @@ record is submitted for approval and routed to a queue, an email notification is
           document.querySelectorAll('.option-label').forEach(lbl => lbl.style.backgroundColor = '');
         }
         const parent = document.getElementById(`label-${input.value}`);
-        parent.style.backgroundColor = input.checked ? '#f0f7fc' : '';
+        parent.style.backgroundColor = input.checked ? '#f0f8fc' : '';
       });
     });
   }
@@ -1747,7 +1877,7 @@ record is submitted for approval and routed to a queue, an email notification is
     }
    
     document.getElementById('submit-btn').style.display = 'none';
-    document.getElementById('finish-btn').style.display = 'none';
+    document.getElementById('abort-btn').style.display = 'none';
    
     if (currentIndex === currentQuestions.length - 1) {
       document.getElementById('next-btn').innerText = "Finish Quiz";
@@ -1756,9 +1886,17 @@ record is submitted for approval and routed to a queue, an email notification is
     }
     document.getElementById('next-btn').style.display = 'block';
    
+    // Evaluate
     const isCorrect = selected.length === q.answer.length && selected.every(val => q.answer.includes(val));
-    if (isCorrect) score++;
    
+    if (isCorrect) {
+      score++;
+    } else {
+      // Add to incorrect list for retake/review later
+      incorrectQuestions.push(q);
+    }
+   
+    // Apply styling
     q.options.forEach(opt => {
       const label = document.getElementById(`label-${opt.letter}`);
       if (q.answer.includes(opt.letter)) {
@@ -1782,16 +1920,66 @@ record is submitted for approval and routed to a queue, an email notification is
     }
   }
 
+  function abortQuiz() {
+    if(confirm("Are you sure you want to end the quiz early? Your progress will be calculated based on the questions answered so far.")) {
+       // Trim the current questions array to only the ones they've seen/answered up to now to avoid breaking the math
+       currentQuestions = currentQuestions.slice(0, currentIndex);
+       endQuiz();
+    }
+  }
+
   function endQuiz() {
+    clearInterval(timerInterval);
     document.getElementById('quiz-screen').style.display = 'none';
     document.getElementById('score-screen').style.display = 'block';
    
-    const percentage = Math.round((score / currentQuestions.length) * 100) || 0;
-    document.getElementById('final-score').innerText = `${percentage}%`;
-    document.getElementById('score-details').innerText = `You answered ${score} out of ${currentQuestions.length} questions correctly.`;
+    // Calculate passing logic
+    const totalTaken = currentQuestions.length;
+    const percentage = totalTaken > 0 ? Math.round((score / totalTaken) * 100) : 0;
+   
+    const scoreCircle = document.getElementById('final-score');
+    const passStatus = document.getElementById('pass-status');
+   
+    scoreCircle.innerText = `${percentage}%`;
+   
+    // Salesforce passing score is typically 65%
+    if (percentage >= 65) {
+      scoreCircle.className = "score-circle pass-text";
+      passStatus.className = "pass-status pass-text";
+      passStatus.innerText = "🎉 PASS!";
+    } else {
+      scoreCircle.className = "score-circle fail-text";
+      passStatus.className = "pass-status fail-text";
+      passStatus.innerText = "❌ FAIL";
+    }
+
+    document.getElementById('score-details').innerText = `You answered ${score} out of ${totalTaken} questions correctly.`;
+
+    // Handle Incorrect Review & Retake features
+    const reviewSection = document.getElementById('review-section');
+    const reviewContainer = document.getElementById('review-items-container');
+    const retakeBtn = document.getElementById('retake-incorrect-btn');
+
+    if (incorrectQuestions.length > 0) {
+      retakeBtn.style.display = 'block';
+      reviewSection.style.display = 'block';
+     
+      let reviewHtml = '';
+      incorrectQuestions.forEach((q, idx) => {
+        // Just show the snippet of the question so they know which one it was
+        let snippet = q.question.length > 100 ? q.question.substring(0, 100) + '...' : q.question;
+        reviewHtml += `<div class="review-item"><strong>Q:</strong> ${snippet} <br> <span style="color:var(--success);">Correct Answer: ${q.answer.join(', ')}</span></div>`;
+      });
+      reviewContainer.innerHTML = reviewHtml;
+
+    } else {
+      retakeBtn.style.display = 'none';
+      reviewSection.style.display = 'none';
+    }
   }
 
   function restartMenu() {
+    clearInterval(timerInterval);
     document.getElementById('score-screen').style.display = 'none';
     document.getElementById('start-screen').style.display = 'block';
   }
